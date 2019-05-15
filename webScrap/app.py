@@ -16,9 +16,6 @@ date = soup.select('.date')
 tag = soup.select_one('.product_description').getText().lstrip()
 number_of_days = len(days)
 
-#for i in range(len(date)):
-
-
 tags = tag.split("、")
 if(len(tags)>1):
     allTag = tags
@@ -26,6 +23,10 @@ if (len(tags) == 0):
     allTag = " "
 if (len(tags) == 1):
     allTag = soup.select_one('.product_description').getText().lstrip()
+
+for i in range(len(date)):
+    if():
+        #available.append()
 
 Tour = {
     "title": soup.select_one('.china_title').select_one('h2').getText().lstrip(),
