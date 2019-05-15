@@ -12,8 +12,12 @@ soup = BeautifulSoup(browser.page_source, "lxml")
 
 # find days
 days = soup.select('.segment_days')[0].findAll('li', recursive=False)
+date = soup.select('.date')
 tag = soup.select_one('.product_description').getText().lstrip()
 number_of_days = len(days)
+
+#for i in range(len(date)):
+
 
 tags = tag.split("、")
 if(len(tags)>1):
@@ -52,5 +56,5 @@ for i in range(number_of_days):
     }
 
 print(Tour)
-
+print(len(date))
 # print()
