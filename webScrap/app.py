@@ -12,7 +12,6 @@ soup = BeautifulSoup(browser.page_source, "lxml")
 
 # find days
 days = soup.select('.segment_days')[0].findAll('li', recursive=False)
-date = soup.select('.date')
 tag = soup.select_one('.product_description').getText().lstrip()
 number_of_days = len(days)
 
@@ -24,15 +23,19 @@ if (len(tags) == 0):
 if (len(tags) == 1):
     allTag = soup.select_one('.product_description').getText().lstrip()
 
-for i in range(len(date)):
-    if():
-        #available.append()
+availableDate = []
+dateList = soup.findAll("span",{"class":"on"})
+for i in range(len(dateList)):
+    temp = dateList[i]
+    date = temp.attrs['date']
+    availableDate.append(date)
 
 Tour = {
     "title": soup.select_one('.china_title').select_one('h2').getText().lstrip(),
     "refcode": soup.select_one('.refCode').getText().lstrip(),
     "tag": allTag,
-    "price": soup.select_one('.price_box').select_one('div').select_one('em').getText().lstrip() + soup.select_one('.price_box').select_one('div').select_one('span').getText().lstrip()
+    "price": soup.select_one('.price_box').select_one('div').select_one('em').getText().lstrip() + soup.select_one('.price_box').select_one('div').select_one('span').getText().lstrip(),
+    "availableDate": availableDate
 }
 
 for i in range(number_of_days):
@@ -57,5 +60,5 @@ for i in range(number_of_days):
     }
 
 print(Tour)
-print(len(date))
+
 # print()
