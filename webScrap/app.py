@@ -28,16 +28,24 @@ if (len(tags) == 1):
 availableDate = []
 dateList = soup.findAll("span",{"class":"on"})
 for i in range(len(dateList)):
-    temp = dateList[i]
-    date = temp.attrs['date']
+    date = dateList[i].attrs['date']
     availableDate.append(date)
+
+
+image = []
+imageList = soup.select('.original_image')[0].findAll('img', {"src":True})
+for i in range(len(imageList)):
+    imagesrc = imageList[i].attrs['src']
+    image.append(imagesrc)
+
 
 Tour = {
     "title": soup.select_one('.china_title').select_one('h2').getText().lstrip(),
     "refcode": soup.select_one('.refCode').getText().lstrip(),
     "tag": allTag,
     "price": soup.select_one('.price_box').select_one('div').select_one('em').getText().lstrip() + soup.select_one('.price_box').select_one('div').select_one('span').getText().lstrip(),
-    "availableDate": availableDate
+    "availableDate": availableDate,
+    "image": image
 }
 
 for i in range(number_of_days):
