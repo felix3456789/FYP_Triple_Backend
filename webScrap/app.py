@@ -5,7 +5,7 @@ import database
 from bs4 import BeautifulSoup
 from selenium import webdriver
 
-url = "https://tours.wingontravel.com/detail/japantravel-9-11233"
+url = "https://tours.wingontravel.com/detail/japantravel-9-12461"
 
 browser = webdriver.Chrome('./chromedriver')
 browser.get(url)
@@ -50,7 +50,9 @@ Tour = {
     "price": soup.select_one('.price_box').select_one('div').select_one('em').getText().lstrip() + soup.select_one('.price_box').select_one('div').select_one('span').getText().lstrip(),
     "availableDate": availableDate,
     "image": image,
-    "detail": detailLink
+    "detail": detailLink,
+    "Disable": False,
+    "Feature": False
 }
 
 for i in range(number_of_days):
@@ -71,7 +73,7 @@ for i in range(number_of_days):
     eat = []
     eatList = day_info[0].findAll("li", {"class":"eat"})
     for j in range(len(eatList)):
-        eat.append(eatList[j].getText().lstrip())
+        eat.append(eatList[j].getText().lstrip().split("；")[0].split("\n")[0])
 
     Tour["day_" + str(i + 1)] = {
         "day": day_info[0].select_one('.segment_day').getText().lstrip(),
@@ -84,7 +86,7 @@ for i in range(number_of_days):
 tour_json = json.dumps(Tour,indent=2, ensure_ascii=False)
 print(tour_json)
 
-database.insertTour(Tour)
+#database.insertTour(Tour)
 # print(Tour)
 
 # print()
