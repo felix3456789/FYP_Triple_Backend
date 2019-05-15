@@ -36,14 +36,17 @@ for i in range(len(imageList)):
     imagesrc = imageList[i].attrs['src']
     image.append(imagesrc)
 
+detail = soup.select('.brochure_tag')[0].findAll('a', {"href":True})
+detailLink = detail[0].attrs['href']
 
 Tour = {
+    "id": soup.select_one('.refCode').getText().lstrip(),
     "title": soup.select_one('.china_title').select_one('h2').getText().lstrip(),
-    "refcode": soup.select_one('.refCode').getText().lstrip(),
     "tag": allTag,
     "price": soup.select_one('.price_box').select_one('div').select_one('em').getText().lstrip() + soup.select_one('.price_box').select_one('div').select_one('span').getText().lstrip(),
     "availableDate": availableDate,
-    "image": image
+    "image": image,
+    "detail": detailLink
 }
 
 for i in range(number_of_days):
@@ -59,9 +62,11 @@ for i in range(number_of_days):
     else:
         stay = " "
     
+    title = day_info[0].select_one('.segment_title').getText().lstrip().split("\n")
+
     Tour["Day " + str(i + 1)] = {
         "day": day_info[0].select_one('.segment_day').getText().lstrip(),
-        "title": day_info[0].select_one('.segment_title').getText().lstrip(),
+        "title": title[0],
         "content": content,
         "eat": day_info[0].select_one('.eat').getText().lstrip(),
         "stay": stay
