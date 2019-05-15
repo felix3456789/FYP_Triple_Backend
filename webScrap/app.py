@@ -43,7 +43,7 @@ detail = soup.select('.brochure_tag')[0].findAll('a', {"href":True})
 detailLink = detail[0].attrs['href']
 
 Tour = {
-    "id": soup.select_one('.refCode').getText().lstrip().split('(')[1].split(')')[0],
+    "_id": soup.select_one('.refCode').getText().lstrip().split('(')[1].split(')')[0],
     "title": soup.select_one('.china_title').select_one('h2').getText().lstrip(),
     "day": number_of_days,
     "tag": allTag,
