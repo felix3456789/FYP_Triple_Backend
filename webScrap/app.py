@@ -68,11 +68,16 @@ for i in range(number_of_days):
     
     title = day_info[0].select_one('.segment_title').getText().lstrip().split("\n")
 
+    eat = []
+    eatList = day_info[0].findAll("li", {"class":"eat"})
+    for j in range(len(eatList)):
+        eat.append(eatList[j].getText().lstrip())
+
     Tour["day_" + str(i + 1)] = {
         "day": day_info[0].select_one('.segment_day').getText().lstrip(),
         "title": title[0],
         "content": content,
-        "eat": day_info[0].select_one('.eat').getText().lstrip(),
+        "eat": eat,
         "stay": stay
     }
 
