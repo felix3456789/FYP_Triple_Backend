@@ -1,6 +1,7 @@
 import requests
 import json
 import codecs
+import database
 from bs4 import BeautifulSoup
 from selenium import webdriver
 
@@ -42,8 +43,9 @@ detail = soup.select('.brochure_tag')[0].findAll('a', {"href":True})
 detailLink = detail[0].attrs['href']
 
 Tour = {
-    "id": soup.select_one('.refCode').getText().lstrip(),
+    "id": soup.select_one('.refCode').getText().lstrip().split('(')[1].split(')')[0],
     "title": soup.select_one('.china_title').select_one('h2').getText().lstrip(),
+    "day": number_of_days,
     "tag": allTag,
     "price": soup.select_one('.price_box').select_one('div').select_one('em').getText().lstrip() + soup.select_one('.price_box').select_one('div').select_one('span').getText().lstrip(),
     "availableDate": availableDate,
@@ -66,7 +68,7 @@ for i in range(number_of_days):
     
     title = day_info[0].select_one('.segment_title').getText().lstrip().split("\n")
 
-    Tour["Day " + str(i + 1)] = {
+    Tour["day_" + str(i + 1)] = {
         "day": day_info[0].select_one('.segment_day').getText().lstrip(),
         "title": title[0],
         "content": content,
@@ -76,6 +78,8 @@ for i in range(number_of_days):
 
 tour_json = json.dumps(Tour,indent=2, ensure_ascii=False)
 print(tour_json)
+
+database.insertTour(Tour)
 # print(Tour)
 
 # print()

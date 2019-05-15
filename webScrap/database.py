@@ -6,5 +6,6 @@ mycol = mydb["tour"]
 
 def insertTour(dict):
     x = mycol.insert_one(dict)
+    print('Inserted')
 
 
