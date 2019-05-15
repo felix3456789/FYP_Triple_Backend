@@ -1,4 +1,6 @@
 import requests
+import json
+import codecs
 from bs4 import BeautifulSoup
 from selenium import webdriver
 
@@ -72,6 +74,8 @@ for i in range(number_of_days):
         "stay": stay
     }
 
-print(Tour)
+tour_json = json.dumps(Tour,indent=2, ensure_ascii=False)
+print(tour_json)
+# print(Tour)
 
 # print()
