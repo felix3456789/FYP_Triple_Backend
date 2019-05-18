@@ -6,10 +6,13 @@ const Joi = require('joi')
 const morgan = require('morgan')
 const logger = require('./middleware/logger')
 const mongoose = require('mongoose')
+const http = require('http');
+
+
 const app = express()
 
 const home = require('./routes/home')
-const courses = require('./routes/courses')
+const tour = require('./routes/tour')
 
 
 mongoose.connect('mongodb://chuenpidb.tk:27017/triple', { useNewUrlParser: true })
@@ -27,7 +30,7 @@ app.use(express.urlencoded({ extended: true }))
 app.use(express.static('public'))
 
 app.use('/', home)
-app.use('/app/courses', courses)
+app.use('/api/tour', tour)
 
 debug('Application Name: ' + config.get('name'))
 
@@ -39,4 +42,4 @@ if (app.get('env') === 'development') {
 app.use(logger)
 
 const port = process.env.PORT || 3000
-app.listen(port, () => console.log(`Listening on port ${port}`))
+app.listen(port, '0.0.0.0', () => console.log(`Listening on port ${port}`))
