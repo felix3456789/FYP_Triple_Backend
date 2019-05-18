@@ -9,6 +9,8 @@ from selenium.webdriver.common.action_chains import ActionChains
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
+from datetime import datetime
+from bson import json_util
 
 url = "https://tours.wingontravel.com/"
 
@@ -55,7 +57,8 @@ while (count < (len(tourLink) - 1)):
     dateList = soup.findAll("span",{"class":"on"})
     for i in range(len(dateList)):
         date = dateList[i].attrs['date']
-        availableDate.append(date)
+        convDate = datetime(int(date.split('-')[0]),int(date.split('-')[1]),int(date.split('-')[2]))
+        availableDate.append(convDate)
 
 
     image = []
@@ -108,11 +111,12 @@ while (count < (len(tourLink) - 1)):
         "Disable": False,
         "Feature": False,
         "days": days,
+        "updatedBy": datetime.now()
     }
 
     
 
-    tour_json = json.dumps(Tour,indent=2, ensure_ascii=False)
+    tour_json = json.dumps(Tour,indent=2, ensure_ascii=False, default=json_util.default)
     print(tour_json)
 
     database.insertTour(Tour)
