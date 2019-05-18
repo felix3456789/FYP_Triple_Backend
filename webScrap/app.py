@@ -67,19 +67,7 @@ while (count < (len(tourLink) - 1)):
     detail = soup.select('.brochure_tag')[0].findAll('a', {"href":True})
     detailLink = detail[0].attrs['href']
 
-    Tour = {
-        "_id": soup.select_one('.refCode').getText().lstrip().split('(')[1].split(')')[0],
-        "title": soup.select_one('.china_title').select_one('h2').getText().lstrip(),
-        "day": number_of_days,
-        "tags": allTag,
-        "price": soup.select_one('.price_box').select_one('div').select_one('em').getText().lstrip() + soup.select_one('.price_box').select_one('div').select_one('span').getText().lstrip(),
-        "availableDate": availableDate,
-        "image": image,
-        "detail": detailLink,
-        "Disable": False,
-        "Feature": False
-    }
-
+    days = []
     for i in range(number_of_days):
         class_name = '.route_day' + str(i)
         day_info = soup.select(class_name)
@@ -100,13 +88,29 @@ while (count < (len(tourLink) - 1)):
         for j in range(len(eatList)):
             eat.append(eatList[j].getText().lstrip().split("；")[0].split("\n")[0])
 
-        Tour["day_" + str(i + 1)] = {
+        days.append( {
             "day": day_info[0].select_one('.segment_day').getText().lstrip(),
             "title": title[0],
             "content": content,
             "eat": eat,
             "stay": stay
-        }
+        })
+
+    Tour = {
+        "_id": soup.select_one('.refCode').getText().lstrip().split('(')[1].split(')')[0],
+        "title": soup.select_one('.china_title').select_one('h2').getText().lstrip(),
+        "day": number_of_days,
+        "tags": allTag,
+        "price": soup.select_one('.price_box').select_one('div').select_one('em').getText().lstrip() + soup.select_one('.price_box').select_one('div').select_one('span').getText().lstrip(),
+        "availableDate": availableDate,
+        "image": image,
+        "detail": detailLink,
+        "Disable": False,
+        "Feature": False,
+        "days": days,
+    }
+
+    
 
     tour_json = json.dumps(Tour,indent=2, ensure_ascii=False)
     print(tour_json)
