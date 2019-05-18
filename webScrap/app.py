@@ -104,7 +104,7 @@ while (count < (len(tourLink) - 1)):
         "title": soup.select_one('.china_title').select_one('h2').getText().lstrip(),
         "day": number_of_days,
         "tags": allTag,
-        "price": soup.select_one('.price_box').select_one('div').select_one('em').getText().lstrip() + soup.select_one('.price_box').select_one('div').select_one('span').getText().lstrip(),
+        "price": int(soup.select_one('.price_box').select_one('div').select_one('span').getText().lstrip().split('+')[0].replace(',','')),
         "availableDate": availableDate,
         "image": image,
         "detail": detailLink,
