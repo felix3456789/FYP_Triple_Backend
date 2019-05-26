@@ -1,11 +1,18 @@
-1. replace '\n' => '' (tags, days)
-2. tag without () eg: 藻岩山(包乘纜車) => 藻岩山
-3. Every tag need to insert tag collection
+- replace '\n' => '' (tags, days)
+- tag without () eg: 藻岩山(包乘纜車) => 藻岩山
+- Country/City need to add into tags/ new row 
+- Every tag need to insert tag collection
     {
         title: tagTitle
         updatedBy: datetime.now()
     }
-4. new row in tour
+- modify tour object
+    a. tags[String] ->tags[object]
+    tag{
+        id: _id of tag
+        title: tagTitle
+    }
+- new row in tour
     a. originalPrice
     b. price -> SalesPrice
     c. prices{
