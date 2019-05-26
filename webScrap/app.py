@@ -46,6 +46,9 @@ while (count < (len(tourLink) - 1)):
     number_of_days = len(days)
 
     tags = tag.split("、")
+    # for i in range(len(tags)):
+    #     tags[i] = tags[i].split('(')[0]
+
     if(len(tags)>1):
         allTag = tags
     if (len(tags) == 0):
@@ -100,7 +103,7 @@ while (count < (len(tourLink) - 1)):
         })
 
     Tour = {
-        "_id": soup.select_one('.refCode').getText().lstrip().split('(')[1].split(')')[0],
+        "tourID": soup.select_one('.refCode').getText().lstrip().split('(')[1].split(')')[0],
         "title": soup.select_one('.china_title').select_one('h2').getText().lstrip(),
         "day": number_of_days,
         "tags": allTag,
@@ -128,3 +131,4 @@ while (count < (len(tourLink) - 1)):
 # print(Tour)
 
 # print()
+
