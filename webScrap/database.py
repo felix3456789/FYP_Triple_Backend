@@ -2,17 +2,29 @@ import pymongo
 
 myclient = pymongo.MongoClient("mongodb://chuenpidb.tk:27017/")
 mydb = myclient["triple"]
-mycol = mydb["tour"]
+toursCol = mydb["tours"]
+tagsCol = mydb["tags"]
 
 def insertTour(dict):
-    temp = mycol.find_one({"tourID":dict["tourID"]})
+    temp = toursCol.find_one({"tourID":dict["tourID"]})
     if(not temp):
-        x = mycol.insert_one(dict)
+        toursCol.insert_one(dict)
         print('Inserted!')
     else:
         myquery = { "tourID": dict["tourID"] }
-        newvalues = { "$set": dict }
-        mycol.update_one(myquery, newvalues)
+        newValues = { "$set": dict }
+        toursCol.update_one(myquery, newValues)
+        print("Updated!")
+
+def insertTag(dict):
+    temp = tagsCol.find_one({"title":dict["title"]})
+    if(not temp):
+        tagsCol.insert_one(dict)
+        print('Inserted!')
+    else:
+        myquery = { "title": dict["title"] }
+        newValues = { "$set": dict }
+        tagsCol.update_one(myquery, newValues)
         print("Updated!")
    
 

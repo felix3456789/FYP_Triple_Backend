@@ -1,0 +1,22 @@
+1. replace '\n' => '' (tags, days)
+2. tag without () eg: 藻岩山(包乘纜車) => 藻岩山
+3. Every tag need to insert tag collection
+    {
+        title: tagTitle
+        updatedBy: datetime.now()
+    }
+4. new row in tour
+    a. originalPrice
+    b. price -> SalesPrice
+    c. prices{
+        adultPrice:
+        adultTax:
+        childHalfRoomPrice:
+        childHalfRoomTax:
+        childPrice:
+        childTax:
+        babyPrice:
+        babyTax:
+        SingleRoomPrice:
+    }
+    d. PlaneInfo (Optional)
