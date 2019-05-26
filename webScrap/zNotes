@@ -1,4 +1,6 @@
 - replace '\n' => '' (tags, days)
+- delete title's TourID and discount 
+    eg:北海道5天春日賞花之旅《出發日期：4月1日至5月31日》(AJSGP05N) -> 北海道5天春日賞花之旅
 - tag without () eg: 藻岩山(包乘纜車) => 藻岩山
 - Country/City need to add into tags/ new row 
 - Every tag need to insert tag collection
