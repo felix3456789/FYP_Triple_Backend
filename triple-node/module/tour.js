@@ -5,12 +5,13 @@ const tourSchema = new mongoose.Schema({
     tourId: String,
     title: { type: String, required: true },
     day: Number,
-    tags: [],
-    // tags: [{
-    //     tagID: mongoose.Schema.Types.ObjectId,
-    //     title: String
-    // }],
-    price: Number,
+    tags: [{
+        id: Number,
+        title: String,
+        updatedBy: Date
+    }],
+    originalPrice: Number,
+    salesPrice: Number,
     availableDate: [Date],
     image: [String],
     detail: String,
