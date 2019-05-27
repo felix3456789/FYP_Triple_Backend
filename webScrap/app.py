@@ -46,17 +46,21 @@ while (count < (len(tourLink) - 1)):
     number_of_days = len(days)
 
     tags = tag.split("、")
+    tagList = []
     for i in range(len(tags)):
         tags[i] = tags[i].split('n')[0]
         tags[i] = tags[i].split('(')[0]
         tags[i] = tags[i].split(')')[0]
+        tagList.append( {
+            "id": i,
+            "title": tags[i],
+            "updatedBy": datetime.now()
+        })
 
-    if(len(tags)>1):
-        allTag = tags
+    if(len(tags)>0):
+        allTag = tagList
     if (len(tags) == 0):
         allTag = " "
-    if (len(tags) == 1):
-        allTag = soup.select_one('.product_description').getText().lstrip()
 
     availableDate = []
     dateList = soup.findAll("span",{"class":"on"})
