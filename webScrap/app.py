@@ -2,6 +2,7 @@ import requests
 import json
 import codecs
 import database
+import time
 from bs4 import BeautifulSoup
 from selenium import webdriver
 from lxml import etree
@@ -46,15 +47,21 @@ while (count < (len(tourLink) - 1)):
     number_of_days = len(days)
 
     tags = tag.split("、")
-    # for i in range(len(tags)):
-    #     tags[i] = tags[i].split('(')[0]
+    tagList = []
+    for i in range(len(tags)):
+        tags[i] = tags[i].lstrip()
+        tags[i] = tags[i].split('(')[0]
+        tags[i] = tags[i].split(')')[0]
+        tagList.append( {
+            "id": i,
+            "title": tags[i],
+            "updatedBy": datetime.now()
+        })
 
-    if(len(tags)>1):
-        allTag = tags
+    if(len(tags)>0):
+        allTag = tagList
     if (len(tags) == 0):
         allTag = " "
-    if (len(tags) == 1):
-        allTag = soup.select_one('.product_description').getText().lstrip()
 
     availableDate = []
     dateList = soup.findAll("span",{"class":"on"})
@@ -102,12 +109,44 @@ while (count < (len(tourLink) - 1)):
             "stay": stay
         })
 
+    title = soup.select_one('.china_title').select_one('h2').getText().lstrip()
+    title = title.split('(')[0]
+    title = title.split('《')[0]
+    title = title.split('【')[0]
+
+    tourID = soup.select_one('.refCode').getText().lstrip().split('(')[1].split(')')[0]
+    country = soup.select_one('.visa_country').getText().lstrip().rstrip()
+    originalPrice = int(soup.select_one('.original_price').getText().lstrip().rstrip().split('HKD ')[1].replace(',',''))
+    salesPrice = int(soup.select_one('.price_box').select_one('div').select_one('span').getText().lstrip().split('+')[0].replace(',',''))
+
+    browser.find_element_by_css_selector("input[class*='yellowButton']").click()
+    browser.switch_to_window(browser.window_handles[-1])
+    time.sleep(1)
+    html = browser.page_source
+    soup = BeautifulSoup(html, "lxml")
+    priceDetail = []
+    priceList = soup.findAll("span",{"class":"fBlue"})
+    priceDetail.append( {
+            "adultPrice": int(priceList[3].getText().lstrip().rstrip().replace(',','')),
+            "adultTax": int(priceList[4].getText().lstrip().rstrip().replace(',','')),
+            "childHalfRoomPrice": int(priceList[6].getText().lstrip().rstrip().replace(',','')),
+            "childHalfRoomTax": int(priceList[7].getText().lstrip().rstrip().replace(',','')),
+            "childPrice": int(priceList[9].getText().lstrip().rstrip().replace(',','')),
+            "childTax": int(priceList[10].getText().lstrip().rstrip().replace(',','')),
+            "babyPrice": int(priceList[12].getText().lstrip().rstrip().replace(',','')),
+            "babyTax": int(priceList[13].getText().lstrip().rstrip().replace(',','')),
+            "SingleRoomPrice": int(priceList[15].getText().lstrip().rstrip().replace(',',''))
+    })
+    
     Tour = {
-        "tourID": soup.select_one('.refCode').getText().lstrip().split('(')[1].split(')')[0],
-        "title": soup.select_one('.china_title').select_one('h2').getText().lstrip(),
+        "tourID": tourID,
+        "title": title,
+        "country": country,
         "day": number_of_days,
         "tags": allTag,
-        "price": int(soup.select_one('.price_box').select_one('div').select_one('span').getText().lstrip().split('+')[0].replace(',','')),
+        "originalPrice": originalPrice,
+        "salesPrice": salesPrice,
+        "prices": priceDetail,
         "availableDate": availableDate,
         "image": image,
         "detail": detailLink,
@@ -116,8 +155,6 @@ while (count < (len(tourLink) - 1)):
         "days": days,
         "updatedBy": datetime.now()
     }
-
-    
 
     tour_json = json.dumps(Tour,indent=2, ensure_ascii=False, default=json_util.default)
     print(tour_json)
