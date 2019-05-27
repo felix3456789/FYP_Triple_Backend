@@ -48,7 +48,7 @@ while (count < (len(tourLink) - 1)):
     tags = tag.split("、")
     tagList = []
     for i in range(len(tags)):
-        tags[i] = tags[i].split('n')[0]
+        tags[i] = tags[i].lstrip()
         tags[i] = tags[i].split('(')[0]
         tags[i] = tags[i].split(')')[0]
         tagList.append( {
@@ -116,6 +116,7 @@ while (count < (len(tourLink) - 1)):
     Tour = {
         "tourID": soup.select_one('.refCode').getText().lstrip().split('(')[1].split(')')[0],
         "title": title,
+        "country": soup.select_one('.visa_country').getText().lstrip().rstrip(),
         "day": number_of_days,
         "tags": allTag,
         "price": int(soup.select_one('.price_box').select_one('div').select_one('span').getText().lstrip().split('+')[0].replace(',','')),
