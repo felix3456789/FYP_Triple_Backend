@@ -2,35 +2,15 @@ const mongoose = require('mongoose')
 const express = require('express')
 const router = express.Router()
 
-const tourSchema = new mongoose.Schema({
-    _id: String,
-    title: String,
-    day: Number,
-    tags: [String],
-    price: Number,
-    availableDate: [Date],
-    image: [String],
-    detail: String,
-    Disable: { type: Boolean, default: false },
-    Feature: { type: Boolean, default: false },
-    days: [{
-        day: String,
-        title: String,
-        content: String,
-        eat: [String],
-        stay: String
-    }],
-    updateBy: Date
-})
-const Tour = mongoose.model('Tour', tourSchema, 'tour')
-
+const { Tour, validate } = require('../module/tour')
 
 router.get('/', async (req, res) => {
     const tours = await Tour.find()
     const convTours = tours.map((tour) => { return tour.toObject() })
     // res.send(JSON.stringify(convTours))
-    console.log(tours)
-    res.send(tours)
+    console.log(convTours)
+    res.send(convTours)
+
 })
 
 // router.get('/:id', (req, res) => {
@@ -74,12 +54,5 @@ router.get('/', async (req, res) => {
 
 //     res.send(course)
 // })
-
-// function validateCourse(course) {
-//     const schema = {
-//         name: Joi.string().min(3).required()
-//     }
-//     return Joi.validate(course, schema)
-// }
 
 module.exports = router;
