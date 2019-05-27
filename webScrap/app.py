@@ -121,7 +121,7 @@ while (count < (len(tourLink) - 1)):
 
     browser.find_element_by_css_selector("input[class*='yellowButton']").click()
     browser.switch_to_window(browser.window_handles[-1])
-    time.sleep(3)
+    time.sleep(1)
     html = browser.page_source
     soup = BeautifulSoup(html, "lxml")
     priceDetail = []
@@ -137,7 +137,6 @@ while (count < (len(tourLink) - 1)):
             "babyTax": int(priceList[13].getText().lstrip().rstrip().replace(',','')),
             "SingleRoomPrice": int(priceList[15].getText().lstrip().rstrip().replace(',',''))
     })
-    
     
     Tour = {
         "tourID": tourID,
