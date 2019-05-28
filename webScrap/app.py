@@ -12,6 +12,7 @@ from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from datetime import datetime
 from bson import json_util
+from selenium.webdriver.common.keys import Keys
 
 url = "https://tours.wingontravel.com/"
 
@@ -37,6 +38,7 @@ while (count < (len(tourLink) - 1)):
     tourscrape = browser.find_elements_by_css_selector("a[href*='japantravel']")
     tourscrape[count].click()
     browser.switch_to_window(browser.window_handles[-1])
+    currentPage = browser.current_url
 
     response = requests.get(browser.current_url)
     soup = BeautifulSoup(browser.page_source, "lxml")
@@ -119,24 +121,33 @@ while (count < (len(tourLink) - 1)):
     originalPrice = int(soup.select_one('.original_price').getText().lstrip().rstrip().split('HKD ')[1].replace(',',''))
     salesPrice = int(soup.select_one('.price_box').select_one('div').select_one('span').getText().lstrip().split('+')[0].replace(',',''))
 
-    browser.find_element_by_css_selector("input[class*='yellowButton']").click()
-    browser.switch_to_window(browser.window_handles[-1])
-    time.sleep(1)
-    html = browser.page_source
-    soup = BeautifulSoup(html, "lxml")
-    priceDetail = []
-    priceList = soup.findAll("span",{"class":"fBlue"})
-    priceDetail.append( {
-            "adultPrice": int(priceList[3].getText().lstrip().rstrip().replace(',','')),
-            "adultTax": int(priceList[4].getText().lstrip().rstrip().replace(',','')),
-            "childHalfRoomPrice": int(priceList[6].getText().lstrip().rstrip().replace(',','')),
-            "childHalfRoomTax": int(priceList[7].getText().lstrip().rstrip().replace(',','')),
-            "childPrice": int(priceList[9].getText().lstrip().rstrip().replace(',','')),
-            "childTax": int(priceList[10].getText().lstrip().rstrip().replace(',','')),
-            "babyPrice": int(priceList[12].getText().lstrip().rstrip().replace(',','')),
-            "babyTax": int(priceList[13].getText().lstrip().rstrip().replace(',','')),
-            "singleRoomPrice": int(priceList[15].getText().lstrip().rstrip().replace(',',''))
-    })
+    detailLoop = browser.find_elements_by_css_selector("span[class*='on']")
+    first_window_handler = browser.current_window_handle
+    for i in range(len(detailLoop)):
+        browser.switch_to.window(first_window_handler)
+        detailLoop[i].send_keys(Keys.COMMAND + 't')
+        second_window_handler = browser.window_handles[1]
+        browser.switch_to_window(browser.window_handles[-1])
+        time.sleep(1)
+        html = browser.page_source
+        soup = BeautifulSoup(html, "lxml")
+        priceDetail = []
+        priceList = soup.findAll("span",{"class":"fBlue"})
+        departureDate = soup.select_one('.date_picker.hasDatepicker')
+        date = departureDate.attrs['value']
+        priceDetail.append( {
+                "departureDate": date,
+                "adultPrice": int(priceList[3].getText().lstrip().rstrip().replace(',','')),
+                "adultTax": int(priceList[4].getText().lstrip().rstrip().replace(',','')),
+                "childHalfRoomPrice": int(priceList[6].getText().lstrip().rstrip().replace(',','')),
+                "childHalfRoomTax": int(priceList[7].getText().lstrip().rstrip().replace(',','')),
+                "childPrice": int(priceList[9].getText().lstrip().rstrip().replace(',','')),
+                "childTax": int(priceList[10].getText().lstrip().rstrip().replace(',','')),
+                "babyPrice": int(priceList[12].getText().lstrip().rstrip().replace(',','')),
+                "babyTax": int(priceList[13].getText().lstrip().rstrip().replace(',','')),
+                "singleRoomPrice": int(priceList[15].getText().lstrip().rstrip().replace(',',''))
+        })
+
     
     Tour = {
         "tourID": tourID,
