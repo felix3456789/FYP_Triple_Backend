@@ -121,34 +121,32 @@ while (count < (len(tourLink) - 1)):
     originalPrice = int(soup.select_one('.original_price').getText().lstrip().rstrip().split('HKD ')[1].replace(',',''))
     salesPrice = int(soup.select_one('.price_box').select_one('div').select_one('span').getText().lstrip().split('+')[0].replace(',',''))
 
-    detailLoop = browser.find_elements_by_css_selector("span[class*='on']")
-    first_window_handler = browser.current_window_handle
+    priceDetail = []
+    detailLoop = browser.find_elements_by_xpath("//label[@class='tip'][not(contains(., '滿額'))]")
     for i in range(len(detailLoop)):
-        browser.switch_to.window(first_window_handler)
-        detailLoop[i].send_keys(Keys.COMMAND + 't')
-        second_window_handler = browser.window_handles[1]
+        browser.get(currentPage)
+        detail = browser.find_elements_by_xpath("//label[@class='tip'][not(contains(., '滿額'))]")
+        detail[i].click()
         browser.switch_to_window(browser.window_handles[-1])
         time.sleep(1)
         html = browser.page_source
         soup = BeautifulSoup(html, "lxml")
-        priceDetail = []
-        priceList = soup.findAll("span",{"class":"fBlue"})
+        priceList = soup.select("div.content_box.white_head_table.traveller_select_qty table tbody tr td span.fBlue")
         departureDate = soup.select_one('.date_picker.hasDatepicker')
         date = departureDate.attrs['value']
         priceDetail.append( {
                 "departureDate": date,
-                "adultPrice": int(priceList[3].getText().lstrip().rstrip().replace(',','')),
-                "adultTax": int(priceList[4].getText().lstrip().rstrip().replace(',','')),
-                "childHalfRoomPrice": int(priceList[6].getText().lstrip().rstrip().replace(',','')),
-                "childHalfRoomTax": int(priceList[7].getText().lstrip().rstrip().replace(',','')),
-                "childPrice": int(priceList[9].getText().lstrip().rstrip().replace(',','')),
-                "childTax": int(priceList[10].getText().lstrip().rstrip().replace(',','')),
-                "babyPrice": int(priceList[12].getText().lstrip().rstrip().replace(',','')),
-                "babyTax": int(priceList[13].getText().lstrip().rstrip().replace(',','')),
-                "singleRoomPrice": int(priceList[15].getText().lstrip().rstrip().replace(',',''))
+                "adultPrice": int(priceList[0].getText().lstrip().rstrip().replace(',','')),
+                "adultTax": int(priceList[1].getText().lstrip().rstrip().replace(',','')),
+                "childHalfRoomPrice": int(priceList[3].getText().lstrip().rstrip().replace(',','')),
+                "childHalfRoomTax": int(priceList[4].getText().lstrip().rstrip().replace(',','')),
+                "childPrice": int(priceList[6].getText().lstrip().rstrip().replace(',','')),
+                "childTax": int(priceList[7].getText().lstrip().rstrip().replace(',','')),
+                "babyPrice": int(priceList[9].getText().lstrip().rstrip().replace(',','')),
+                "babyTax": int(priceList[10].getText().lstrip().rstrip().replace(',','')),
+                "singleRoomPrice": int(priceList[12].getText().lstrip().rstrip().replace(',',''))
         })
-
-    
+  
     Tour = {
         "tourID": tourID,
         "title": title,
