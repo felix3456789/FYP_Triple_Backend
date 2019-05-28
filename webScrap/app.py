@@ -135,7 +135,7 @@ while (count < (len(tourLink) - 1)):
             "childTax": int(priceList[10].getText().lstrip().rstrip().replace(',','')),
             "babyPrice": int(priceList[12].getText().lstrip().rstrip().replace(',','')),
             "babyTax": int(priceList[13].getText().lstrip().rstrip().replace(',','')),
-            "SingleRoomPrice": int(priceList[15].getText().lstrip().rstrip().replace(',',''))
+            "singleRoomPrice": int(priceList[15].getText().lstrip().rstrip().replace(',',''))
     })
     
     Tour = {
