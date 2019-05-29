@@ -125,10 +125,10 @@ while (count < (len(tourLink) - 1)):
     salesPrice = int(soup.select_one('.price_box').select_one('div').select_one('span').getText().lstrip().split('+')[0].replace(',',''))
 
     priceDetail = []
-    detailLoop = browser.find_elements_by_xpath("//div[@class='date'][span[@class='on']][not(contains(., '滿額'))][not(contains(., '系統維護中'))]")
+    detailLoop = browser.find_elements_by_xpath("//div[@class='date'][span[@class*='on']][not(contains(., '滿額'))][not(contains(., '系統維護中'))]")
     for i in range(len(detailLoop)):
         browser.get(currentPage)
-        detail = browser.find_elements_by_xpath("//div[@class='date'][span[@class='on']][not(contains(., '滿額'))][not(contains(., '系統維護中'))]")
+        detail = browser.find_elements_by_xpath("//div[@class='date'][span[@class*='on']][not(contains(., '滿額'))][not(contains(., '系統維護中'))]")
         print(detail[i].is_displayed())
         nextMonth = browser.find_elements_by_css_selector("div[class*='next_month_able']")
         countNext = 0
