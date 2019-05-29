@@ -13,11 +13,13 @@ router.get('/', async (req, res) => {
 
 })
 
-// router.get('/:id', (req, res) => {
-//     const course = courses.find(c => c.id === parseInt(req.params.id))
-//     if (!course) return res.status(404).send('The course not found')
-//     res.send(course)
-// })
+router.get('/:id', async (req, res) => {
+    const tours = await Tour.find({ tourID: req.params.id })
+    if (!tours) return res.status(404).send('The course not found')
+    const convTours = tours.map((tour) => { return tour.toObject() })
+    console.log(convTours)
+    res.send(convTours)
+})
 
 // router.post('/', (req, res) => {
 //     const { error } = validateCourse(req.body)

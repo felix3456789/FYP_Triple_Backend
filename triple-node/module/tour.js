@@ -2,7 +2,7 @@ const mongoose = require('mongoose')
 const Joi = require('joi')
 
 const tourSchema = new mongoose.Schema({
-    tourId: String,
+    tourID: String,
     title: { type: String, required: true },
     day: Number,
     tags: [{
