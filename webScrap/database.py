@@ -8,23 +8,31 @@ tagsCol = mydb["tags"]
 def insertTour(dict):
     temp = toursCol.find_one({"tourID":dict["tourID"]})
     if(not temp):
-        toursCol.insert_one(dict)
+        _id = toursCol.insert_one(dict)
         print('Inserted!')
+        print(_id.inserted_id)
+        return _id.inserted_id
     else:
         myquery = { "tourID": dict["tourID"] }
         newValues = { "$set": dict }
-        toursCol.update_one(myquery, newValues)
+        _id = toursCol.update_one(myquery, newValues)
         print("Updated!")
+        print(temp["_id"])
+        return temp["_id"]
 
 def insertTag(dict):
     temp = tagsCol.find_one({"title":dict["title"]})
     if(not temp):
-        tagsCol.insert_one(dict)
+        _id = tagsCol.insert_one(dict)
         print('Inserted!')
+        print(_id.inserted_id)
+        return _id.inserted_id
     else:
         myquery = { "title": dict["title"] }
         newValues = { "$set": dict }
-        tagsCol.update_one(myquery, newValues)
+        _id = tagsCol.update_one(myquery, newValues)
         print("Updated!")
+        print(temp["_id"])
+        return temp["_id"]
    
 
