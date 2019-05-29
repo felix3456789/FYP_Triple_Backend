@@ -118,7 +118,10 @@ while (count < (len(tourLink) - 1)):
 
     tourID = soup.select_one('.refCode').getText().lstrip().split('(')[1].split(')')[0]
     country = soup.select_one('.visa_country').getText().lstrip().rstrip()
-    originalPrice = int(soup.select_one('.original_price').getText().lstrip().rstrip().split('HKD ')[1].replace(',',''))
+    if(soup.select_one('.original_price')):
+        originalPrice = int(soup.select_one('.original_price').getText().lstrip().rstrip().split('HKD ')[1].replace(',',''))
+    else:
+        originalPrice = " "
     salesPrice = int(soup.select_one('.price_box').select_one('div').select_one('span').getText().lstrip().split('+')[0].replace(',',''))
 
     priceDetail = []
@@ -126,6 +129,10 @@ while (count < (len(tourLink) - 1)):
     for i in range(len(detailLoop)):
         browser.get(currentPage)
         detail = browser.find_elements_by_xpath("//label[@class='tip'][not(contains(., '滿額'))]")
+        print(detail[i].is_displayed())
+        if(detail[i].is_displayed() == False):
+            nextMonth = browser.find_element_by_css_selector("div[class*='next_month_able']")
+            nextMonth.click()
         detail[i].click()
         browser.switch_to_window(browser.window_handles[-1])
         time.sleep(1)
