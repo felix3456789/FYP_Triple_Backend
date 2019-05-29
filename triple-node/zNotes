@@ -1,2 +1,19 @@
 find tour date between
 {availableDate:{$gte:new ISODate("2019-06-22T00:00:00Z"),$lte:new ISODate("2019-06-23T00:00:00Z")}}
+
+
+User{
+Email
+Password
+Title
+Eng last
+Eng first
+ID 
+Passport
+Passport date
+phoneNum
+Payment
+BOD
+Credit
+Friend[{}]
+}
