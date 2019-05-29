@@ -178,9 +178,10 @@ while (count < (len(tourLink) - 1)):
     }
 
     tour_json = json.dumps(Tour,indent=2, ensure_ascii=False, default=json_util.default)
-    print(tour_json)
+    # print(tour_json)
 
-    database.insertTour(Tour)
+    _id = database.insertTour(Tour)
+    print(_id)
     count += 1
 
     print(count)
