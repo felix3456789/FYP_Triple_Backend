@@ -2,13 +2,13 @@ const mongoose = require('mongoose')
 const Joi = require('joi')
 
 const userSchema = new mongoose.Schema({
-    engFirstName: {
+    firstNameEng: {
         type: String,
         required: true,
         minlength: 3,
-        maxlength: 50
+        maxlength: 50,
     },
-    engLastName: {
+    lastNameEng: {
         type: String,
         required: true,
         minlength: 3,
@@ -17,6 +17,33 @@ const userSchema = new mongoose.Schema({
     email: {
         type: String,
         required: true
+    },
+    password: {
+        type: String,
+        required: true
+    },
+    title: {
+        type: String,
+        required: true
+    },
+    passportNum: {
+        type: String
+    },
+    passportDate: {
+        type: Date
+    },
+    phoneNum: {
+        type: Number
+    },
+    BOD: {
+        type: Date
+    },
+    Credit: {
+        type: Number,
+        default: 0
+    },
+    Friend: {
+        type: [Object]
     },
     disable: {
         type: Boolean,
