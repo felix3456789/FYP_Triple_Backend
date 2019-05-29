@@ -35,7 +35,7 @@ while (count < (len(tourLink) - 1)):
         tourLink = browser.find_elements_by_css_selector("a[href*='japantravel']")
         url = browser.current_url
         count = 0
-    tourscrape = browser.find_elements_by_css_selector("a[href*='japantravel']")
+    tourscrape = browser.find_elements_by_css_selector("h4 a[href*='japantravel']")
     tourscrape[count].click()
     browser.switch_to_window(browser.window_handles[-1])
     currentPage = browser.current_url
@@ -130,12 +130,17 @@ while (count < (len(tourLink) - 1)):
         browser.get(currentPage)
         detail = browser.find_elements_by_xpath("//label[@class='tip'][not(contains(., '滿額'))]")
         print(detail[i].is_displayed())
-        if(detail[i].is_displayed() == False):
-            nextMonth = browser.find_element_by_css_selector("div[class*='next_month_able']")
-            nextMonth.click()
+        nextMonth = browser.find_elements_by_css_selector("div[class*='next_month_able']")
+        count = 0
+        while (detail[i].is_displayed() == False):
+            nextMonth[count].click()
+            count += 1
+            print(detail[i].is_displayed())
+
+        print(detail[i].is_displayed())
         detail[i].click()
         browser.switch_to_window(browser.window_handles[-1])
-        time.sleep(1)
+        time.sleep(2)
         html = browser.page_source
         soup = BeautifulSoup(html, "lxml")
         priceList = soup.select("div.content_box.white_head_table.traveller_select_qty table tbody tr td span.fBlue")
