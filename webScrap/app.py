@@ -13,6 +13,7 @@ from selenium.webdriver.support import expected_conditions as EC
 from datetime import datetime
 from bson import json_util
 from selenium.webdriver.common.keys import Keys
+from bson import ObjectId
 
 url = "https://tours.wingontravel.com/"
 
@@ -21,8 +22,10 @@ browser.get(url)
 searchLink = browser.find_element_by_css_selector("a[href*='japantravel']")
 searchLink.click()
 browser.switch_to_window(browser.window_handles[-1])
-tourLink = browser.find_elements_by_css_selector("a[href*='japantravel']")
+tourLink = browser.find_elements_by_css_selector("h4 a[href*='japantravel']")
 count = 0
+elem = browser.find_element_by_link_text("日本")
+elem.click()
 closePopUp = browser.find_element_by_css_selector("a[href*='javascript:MasterPageJS.appClose();']").click()
 url = browser.current_url
 
@@ -32,7 +35,7 @@ while (count < (len(tourLink) - 1)):
     if (count == (len(tourLink) - 2)):
         browser.find_element_by_css_selector("a[class='next_page']").click()
         browser.switch_to_window(browser.window_handles[-1])
-        tourLink = browser.find_elements_by_css_selector("a[href*='japantravel']")
+        tourLink = browser.find_elements_by_css_selector("h4 a[href*='japantravel']")
         url = browser.current_url
         count = 0
     tourscrape = browser.find_elements_by_css_selector("h4 a[href*='japantravel']")
@@ -44,25 +47,31 @@ while (count < (len(tourLink) - 1)):
     soup = BeautifulSoup(browser.page_source, "lxml")
 
     # find days
+    time.sleep(1)
     days = soup.select('.segment_days')[0].findAll('li', recursive=False)
     tag = soup.select_one('.product_description').getText().lstrip()
     number_of_days = len(days)
 
-    tags = tag.split("、")
+    tagCollection = tag.split("、")
     tagList = []
-    for i in range(len(tags)):
-        tags[i] = tags[i].lstrip()
-        tags[i] = tags[i].split('(')[0]
-        tags[i] = tags[i].split(')')[0]
+    for i in range(len(tagCollection)):
+        tagCollection[i] = tagCollection[i].lstrip()
+        tagCollection[i] = tagCollection[i].split('(')[0]
+        tagCollection[i] = tagCollection[i].split(')')[0]
+        tags = {
+            "title": tagCollection[i],
+            "updatedBy": datetime.now()
+        }
+        _id = database.insertTag(tag)
         tagList.append( {
-            "id": i,
-            "title": tags[i],
+            "_id": ObjectId(_id),
+            "title": tagCollection[i],
             "updatedBy": datetime.now()
         })
 
-    if(len(tags)>0):
+    if(len(tagCollection)>0):
         allTag = tagList
-    if (len(tags) == 0):
+    if (len(tagCollection) == 0):
         allTag = " "
 
     availableDate = []
@@ -125,22 +134,19 @@ while (count < (len(tourLink) - 1)):
     salesPrice = int(soup.select_one('.price_box').select_one('div').select_one('span').getText().lstrip().split('+')[0].replace(',',''))
 
     priceDetail = []
-    detailLoop = browser.find_elements_by_xpath("//div[@class='date'][span[@class*='on']][not(contains(., '滿額'))][not(contains(., '系統維護中'))]")
+    detailLoop = browser.find_elements_by_xpath("//div[@class='date'][span[contains(@class, 'on')]][not(contains(., '滿額'))][not(contains(., '系統維護中'))]")
     for i in range(len(detailLoop)):
         browser.get(currentPage)
-        detail = browser.find_elements_by_xpath("//div[@class='date'][span[@class*='on']][not(contains(., '滿額'))][not(contains(., '系統維護中'))]")
-        print(detail[i].is_displayed())
+        detail = browser.find_elements_by_xpath("//div[@class='date'][span[contains(@class, 'on')]][not(contains(., '滿額'))][not(contains(., '系統維護中'))]")
         nextMonth = browser.find_elements_by_css_selector("div[class*='next_month_able']")
         countNext = 0
         while (detail[i].is_displayed() == False):
             nextMonth[countNext].click()
             countNext += 1
-            print(detail[i].is_displayed())
 
-        print(detail[i].is_displayed())
         detail[i].click()
         browser.switch_to_window(browser.window_handles[-1])
-        time.sleep(2)
+        time.sleep(5)
         html = browser.page_source
         soup = BeautifulSoup(html, "lxml")
         priceList = soup.select("div.content_box.white_head_table.traveller_select_qty table tbody tr td span.fBlue")
@@ -178,7 +184,7 @@ while (count < (len(tourLink) - 1)):
     }
 
     tour_json = json.dumps(Tour,indent=2, ensure_ascii=False, default=json_util.default)
-    # print(tour_json)
+    print(tour_json)
 
     _id = database.insertTour(Tour)
     print(_id)
