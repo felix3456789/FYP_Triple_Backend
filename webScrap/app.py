@@ -17,25 +17,42 @@ from bson import ObjectId
 
 url = "https://tours.wingontravel.com/"
 
-browser = webdriver.Chrome('./chromedriver')
+chrome_options = webdriver.ChromeOptions()
+prefs = {"profile.managed_default_content_settings.images": 2}
+chrome_options.add_experimental_option("prefs", prefs)
+
+browser = webdriver.Chrome('./chromedriver', chrome_options=chrome_options)
 browser.get(url)
 searchLink = browser.find_elements_by_css_selector("div[class*='level_title'] h4 a")
+closePopUp = browser.find_element_by_css_selector("a[href*='javascript:MasterPageJS.appClose();']").click()
 for j in range(len(searchLink)):
-    searchLink[j].click()
+    url = "https://tours.wingontravel.com/"
+    browser.get(url)
+    browser.switch_to_window(browser.window_handles[-1])
+    linkList = browser.find_elements_by_css_selector("div[class*='level_title'] h4 a")
+    nextRegion = browser.find_elements_by_css_selector("div[class*='category_root'] ul li[class*='root']")
+    countryCount = 0
+    while (linkList[j].is_displayed() == False):
+        nextRegion[countryCount].click()
+        countryCount += 1
+        if count > 3: 
+            break
+    linkList[j].click()
     browser.switch_to_window(browser.window_handles[-1])
     tourLink = browser.find_elements_by_css_selector("h4 a[href*='detail']")
     count = 0
     # elem = browser.find_element_by_link_text("日本")
     # elem.click()
-    closePopUp = browser.find_element_by_css_selector("a[href*='javascript:MasterPageJS.appClose();']").click()
     url = browser.current_url
 
     while (count < (len(tourLink) - 1)):
         browser.get(url)
         if (count == (len(tourLink) - 2)):
-            nextTourList = browser.find_element_by_css_selector("a[class='next_page']")
-            if(nextTourList):
-                nextTourList.click()
+            nextList = browser.find_elements_by_css_selector("a[class='next_page']")
+            if not nextList:
+                break
+            else:
+                nextList[0].click()
             browser.switch_to_window(browser.window_handles[-1])
             tourLink = browser.find_elements_by_css_selector("h4 a[href*='detail']")
             url = browser.current_url
@@ -122,19 +139,23 @@ for j in range(len(searchLink)):
             })
 
         title = soup.select_one('.china_title').select_one('h2').getText().lstrip()
-        title = title.split('(')[0]
         title = title.split('《')[0]
-        title = title.split('【')[0]
+        title = title.split('(')[0]
+
 
         tourID = soup.select_one('.refCode').getText().lstrip().split('(')[1].split(')')[0]
-        country = soup.select_one('.visa_country').getText().lstrip().rstrip()
+        place = soup.select("a[href*=dest]")
+        country = place[0].getText().lstrip().rstrip().split('旅')[0]
+        city = place[1].getText().lstrip().rstrip().split('旅')[0]
+        if(city == "日本"):
+            city = " "
         if(soup.select_one('.original_price')):
             originalPrice = int(soup.select_one('.original_price').getText().lstrip().rstrip().split('HKD ')[1].replace(',',''))
         else:
             originalPrice = " "
         salesPrice = int(soup.select_one('.price_box').select_one('div').select_one('span').getText().lstrip().split('+')[0].replace(',',''))
 
-        # priceDetail = []
+        priceDetail = []
         # detailLoop = browser.find_elements_by_xpath("//div[@class='date'][span[contains(@class, 'on')]][not(contains(., '滿額'))][not(contains(., '系統維護中'))]")
         # for i in range(len(detailLoop)):
         #     browser.get(currentPage)
@@ -170,11 +191,12 @@ for j in range(len(searchLink)):
             "tourID": tourID,
             "title": title,
             "country": country,
+            "city": city,
             "day": number_of_days,
             "tags": allTag,
             "originalPrice": originalPrice,
             "salesPrice": salesPrice,
-            #"prices": priceDetail,
+            "prices": priceDetail,
             "availableDate": availableDate,
             "image": image,
             "detail": detailLink,
