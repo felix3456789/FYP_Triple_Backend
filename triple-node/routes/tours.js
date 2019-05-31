@@ -4,6 +4,8 @@ const router = express.Router()
 
 const { Tour, validate } = require('../module/tour')
 
+
+
 router.get('/', async (req, res) => {
     const tours = await Tour.find()
     const convTours = tours.map((tour) => { return tour.toObject() })

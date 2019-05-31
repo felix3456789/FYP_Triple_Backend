@@ -3,7 +3,7 @@ const config = require('config')
 const express = require("express")
 const logger = require('./middleware/logger')
 const mongoose = require('mongoose')
-
+const cors = require('cors')
 
 const app = express()
 
@@ -18,6 +18,7 @@ mongoose.connect('mongodb://chuenpidb.tk:27017/triple', { useNewUrlParser: true 
 
 app.set('view engine', 'pug')
 app.set('views', './views')
+app.use(cors())
 
 app.use(express.json())
 app.use(express.urlencoded({ extended: true }))
@@ -28,6 +29,8 @@ app.use('/api/tour', tours)
 app.use('/api/user', users)
 
 app.use(logger)
+
+
 
 const port = process.env.PORT || 3000
 app.listen(port, '0.0.0.0', () => console.log(`Listening on port ${port}`))
