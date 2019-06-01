@@ -26,8 +26,11 @@ browser = webdriver.Chrome('./chromedriver', chrome_options=chrome_options)
 browser.get(url)
 hashTagList = ["深度遊", "美食", "純玩", "購物", "主題樂園", "日本", "韓國", "台灣", "泰國", "新加坡", "越南", "馬爾代夫", "柬埔寨" , "馬來西亞", "沙巴", "印尼", "歐洲", "澳洲", "俄羅斯", "埃及", "南非", "東歐", "西歐", "美國", "英國", "德國", "瑞士", "意大利", "加拿大", "新西蘭", "希臘", "西班牙", "杜拜", "土耳其", "北京", "絲綢之旅", "九寨溝", "西藏", "上海", "張家界", "西安", "雲南" , "華東", "內蒙古", "武夷山", "海南島", "武當山", "中國", "自然", "建築", "文化", "教堂", "長隆"]
 closePopUp = browser.find_element_by_css_selector("a[href*='javascript:MasterPageJS.appClose();']").click()
+print(len(hashTagList))
 for i in range(len(hashTagList)):
     search = "https://tours.wingontravel.com/search/searchtext=" + hashTagList[i]
+    browser.get(search)
+    browser.switch_to_window(browser.window_handles[-1])
     tourLink = browser.find_elements_by_css_selector("h4 a[href*='detail']")
     url = browser.current_url
     for j in range(len(tourLink)):
@@ -60,7 +63,7 @@ for i in range(len(hashTagList)):
                 "title": hashTagList[i],
                 "updatedBy": datetime.now()
             }
-        _id = database.insertTag(hashtags)
+        _id = database.insertHashTag(hashtags)
         hashtags = {
             "_id": ObjectId(_id),
             "title": hashTagList[i],
@@ -78,6 +81,8 @@ for i in range(len(hashTagList)):
 
         _id = database.insertTour(Tour)
         print(_id)
+        print(j)
+        print(len(tourLink))
 
     # print(Tour)
 

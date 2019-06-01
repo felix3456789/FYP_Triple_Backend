@@ -4,6 +4,7 @@ myclient = pymongo.MongoClient("mongodb://chuenpidb.tk:27017/")
 mydb = myclient["triple"]
 toursCol = mydb["tours"]
 tagsCol = mydb["tags"]
+hashtagsCol = mydb["hashtags"]
 
 def insertTour(dict):
     temp = toursCol.find_one({"tourID":dict["tourID"]})
@@ -32,20 +33,20 @@ def insertTag(dict):
         newValues = { "$set": dict }
         _id = tagsCol.update_one(myquery, newValues)
         print("Updated!")
-        print(temp["_id"])
-        return temp["_id"]
+        print(tempTag["_id"])
+        return tempTag["_id"]
 
 def insertHashTag(dict):
-    temp = tagsCol.find_one({"title":dict["title"]})
+    temp = hashtagsCol.find_one({"title":dict["title"]})
     if(not temp):
-        _id = tagsCol.insert_one(dict)
+        _id = hashtagsCol.insert_one(dict)
         print('Inserted!')
         print(_id.inserted_id)
         return _id.inserted_id
     else:
         myquery = { "title": dict["title"] }
         newValues = { "$set": dict }
-        _id = tagsCol.update_one(myquery, newValues)
+        _id = hashtagsCol.update_one(myquery, newValues)
         print("Updated!")
         print(temp["_id"])
         return temp["_id"]
