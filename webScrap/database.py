@@ -21,8 +21,8 @@ def insertTour(dict):
         return temp["_id"]
 
 def insertTag(dict):
-    temp = tagsCol.find_one({"title":dict["title"]})
-    if(not temp):
+    tempTag = tagsCol.find_one({"title":dict["title"]})
+    if(not tempTag):
         _id = tagsCol.insert_one(dict)
         print('Inserted!')
         print(_id.inserted_id)
@@ -49,5 +49,3 @@ def insertHashTag(dict):
         print("Updated!")
         print(temp["_id"])
         return temp["_id"]
-   
-
