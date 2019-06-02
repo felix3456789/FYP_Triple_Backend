@@ -14,6 +14,7 @@ from datetime import datetime
 from bson import json_util
 from selenium.webdriver.common.keys import Keys
 from bson import ObjectId
+import re
 
 url = "https://tours.wingontravel.com/"
 
@@ -39,9 +40,9 @@ for j in range(len(searchLink)):
     count = 0
     url = browser.current_url
 
-    while (count < (len(tourLink) - 1)):
+    while (count < (len(tourLink))):
         browser.get(url)
-        if (count == (len(tourLink) - 2)):
+        if (count == (len(tourLink) - 1)):
             nextList = browser.find_elements_by_css_selector("a[class='next_page']")
             if not nextList:
                 break
@@ -55,6 +56,8 @@ for j in range(len(searchLink)):
         tourscrape = browser.find_elements_by_css_selector("h4 a[href*='detail']")
         tourSoup = soup.select("h4 a[href*='detail']")
         tourscrape[count].click()
+        browser.switch_to.window(browser.window_handles[0])
+        browser.close()
         feature = False
         featureCount = soup.select("div [class*='product_list_recommend_box']")
         if(count < len(featureCount)):
@@ -67,7 +70,7 @@ for j in range(len(searchLink)):
         soup = BeautifulSoup(browser.page_source, "lxml")
 
         # find days
-        day = soup.select('.segment_days')[0].findAll('li', recursive=False)
+        day = soup.select("div[class*='segment_day']")
         tag = soup.select_one('.product_description').getText().lstrip()
         number_of_days = len(day)
 
@@ -143,9 +146,9 @@ for j in range(len(searchLink)):
             })
 
         title = soup.select_one('.china_title').select_one('h2').getText().lstrip()
-        title = title.split('《')[0]
-        title = title.split('(')[0]
-
+        title = re.sub('【[^>]+】', '', title)
+        title = re.sub('《[^>]+》', '', title)
+        title = re.sub('\([^>]+\)', '', title)
 
         tourID = soup.select_one('.refCode').getText().lstrip().split('(')[1].split(')')[0]
         place = soup.select("a[href*=dest]")
@@ -155,9 +158,10 @@ for j in range(len(searchLink)):
             city = " "
         if(soup.select_one('.original_price')):
             originalPrice = int(soup.select_one('.original_price').getText().lstrip().rstrip().split('HKD ')[1].replace(',',''))
+            salesPrice = int(soup.select_one('.price_box').select_one('div').select_one('span').getText().lstrip().split('+')[0].replace(',',''))
         else:
-            originalPrice = " "
-        salesPrice = int(soup.select_one('.price_box').select_one('div').select_one('span').getText().lstrip().split('+')[0].replace(',',''))
+            originalPrice = int(soup.select_one('.price_box').select_one('div').select_one('span').getText().lstrip().split('+')[0].replace(',',''))
+            salesPrice = None
 
         priceDetail = []
         # detailLoop = browser.find_elements_by_xpath("//div[@class='date'][span[contains(@class, 'on')]][not(contains(., '滿額'))][not(contains(., '系統維護中'))]")
@@ -173,7 +177,7 @@ for j in range(len(searchLink)):
 
         #     detail[i].click()
         #     browser.switch_to_window(browser.window_handles[-1])
-        #     time.sleep(5)
+        #     time.sleep(2)
         #     html = browser.page_source
         #     soup = BeautifulSoup(html, "lxml")
             
@@ -246,7 +250,6 @@ for j in range(len(searchLink)):
             "image": image,
             "detail": detailLink,
             "Disable": False,
-            "Feature": False,
             "days": days,
             "updatedBy": datetime.now()
         }

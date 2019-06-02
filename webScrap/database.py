@@ -36,19 +36,17 @@ def insertTag(dict):
         print(tempTag["_id"])
         return tempTag["_id"]
 
-# def insertHashtag(dict):
-#     tempTag = tagsCol.find_one({"title":dict["title"]})
-#     if(not tempTag):
-#         _id = tagsCol.insert_one(dict)
-#         print('Inserted!')
-#         print(_id.inserted_id)
-#         return _id.inserted_id
-#     else:
-#         myquery = { "title": dict["title"] }
-#         newValues = { "$set": dict }
-#         _id = tagsCol.update_one(myquery, newValues)
-#         print("Updated!")
-#         print(tempTag["_id"])
-#         return tempTag["_id"]
-   
-
+def insertHashTag(dict):
+    temp = hashtagsCol.find_one({"title":dict["title"]})
+    if(not temp):
+        _id = hashtagsCol.insert_one(dict)
+        print('Inserted!')
+        print(_id.inserted_id)
+        return _id.inserted_id
+    else:
+        myquery = { "title": dict["title"] }
+        newValues = { "$set": dict }
+        _id = hashtagsCol.update_one(myquery, newValues)
+        print("Updated!")
+        print(temp["_id"])
+        return temp["_id"]
