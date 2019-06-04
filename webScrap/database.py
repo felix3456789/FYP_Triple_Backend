@@ -50,3 +50,15 @@ def insertHashTag(dict):
         print("Updated!")
         print(temp["_id"])
         return temp["_id"]
+
+
+def update_tags(dict, new_tag, tourID):
+    temp = toursCol.find_one({"tourID":dict["tourID"]})
+    if(temp):
+        myquery = { "tourID": dict["tourID"] }
+        newValues = { "$set": dict }
+        _id = toursCol.update({'tourID': tourID}, {'$push': {'hashtags': new_tag}})
+        print("Updated!")
+        print(temp["_id"])
+        return temp["_id"]
+    

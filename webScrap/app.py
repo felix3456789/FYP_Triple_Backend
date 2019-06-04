@@ -163,7 +163,9 @@ for j in range(len(searchLink)):
             originalPrice = int(soup.select_one('.price_box').select_one('div').select_one('span').getText().lstrip().split('+')[0].replace(',',''))
             salesPrice = None
 
-        priceDetail = []
+        hashtags = []
+        
+        # priceDetail = []
         # detailLoop = browser.find_elements_by_xpath("//div[@class='date'][span[contains(@class, 'on')]][not(contains(., '滿額'))][not(contains(., '系統維護中'))]")
         # print(len(detailLoop))
         # for i in range(len(detailLoop)):
@@ -177,7 +179,7 @@ for j in range(len(searchLink)):
 
         #     detail[i].click()
         #     browser.switch_to_window(browser.window_handles[-1])
-        #     time.sleep(2)
+        #     time.sleep(5)
         #     html = browser.page_source
         #     soup = BeautifulSoup(html, "lxml")
             
@@ -245,13 +247,14 @@ for j in range(len(searchLink)):
             "tags": allTag,
             "originalPrice": originalPrice,
             "salesPrice": salesPrice,
-            "prices": priceDetail,
+            # "prices": priceDetail,
             "availableDate": availableDate,
             "image": image,
             "detail": detailLink,
             "Disable": False,
             "days": days,
-            "updatedBy": datetime.now()
+            "updatedBy": datetime.now(),
+            "hashtags" : hashtags
         }
 
         tour_json = json.dumps(Tour,indent=2, ensure_ascii=False, default=json_util.default)
