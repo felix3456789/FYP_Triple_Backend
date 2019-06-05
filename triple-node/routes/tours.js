@@ -7,7 +7,7 @@ const { Tour, validate } = require('../module/tour')
 
 
 router.get('/', async (req, res) => {
-    const tours = await Tour.find()
+    const tours = await Tour.find().limit(20)
     const convTours = tours.map((tour) => { return tour.toObject() })
     // res.send(JSON.stringify(convTours))
     console.log(convTours)

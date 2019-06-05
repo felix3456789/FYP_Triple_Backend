@@ -10,6 +10,7 @@ const app = express()
 const home = require('./routes/home')
 const tours = require('./routes/tours')
 const users = require('./routes/users')
+const tags = require('./routes/tags')
 
 
 mongoose.connect('mongodb://chuenpidb.tk:27017/triple', { useNewUrlParser: true })
@@ -27,6 +28,7 @@ app.use(express.static('public'))
 app.use('/', home)
 app.use('/api/tour', tours)
 app.use('/api/user', users)
+app.use('/api/tag', tags)
 
 app.use(logger)
 
