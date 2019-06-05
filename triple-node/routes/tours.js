@@ -10,7 +10,7 @@ router.get('/', async (req, res) => {
     const tours = await Tour.find().limit(20)
     const convTours = tours.map((tour) => { return tour.toObject() })
     // res.send(JSON.stringify(convTours))
-    console.log(convTours)
+    console.log(new Date())
     res.send(convTours)
 
 })
@@ -19,7 +19,7 @@ router.get('/:id', async (req, res) => {
     const tours = await Tour.find({ tourID: req.params.id })
     if (!tours) return res.status(404).send('The course not found')
     const convTours = tours.map((tour) => { return tour.toObject() })
-    console.log(convTours)
+    console.log(new Date())
     res.send(convTours)
 })
 

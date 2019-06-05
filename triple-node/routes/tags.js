@@ -7,10 +7,10 @@ const { Tag } = require('../module/tag')
 
 
 router.get('/', async (req, res) => {
-    const tags = await Tag.find()
+    const tags = await Tag.find().limit(30)
     const convTags = tags.map((tag) => { return tag.toObject().title })
     // res.send(JSON.stringify(convTours))
-    console.log(convTags)
+    console.log(new Date())
     res.send(convTags)
 
 })
@@ -22,7 +22,7 @@ router.get('/limit/:count', async (req, res) => {
     const tags = await Tag.find().limit(limit).skip(random)
     const convTags = tags.map((tag) => { return tag.toObject().title })
     // res.send(JSON.stringify(convTours))
-    console.log(convTags)
+    console.log(new Date())
     res.send(convTags)
 
 })
