@@ -1,5 +1,7 @@
 const mongoose = require('mongoose')
 const express = require('express')
+const _ = require('lodash')
+const bcrypt = require('bcrypt')
 const router = express.Router()
 
 const { User, validate } = require('../module/user')
@@ -14,18 +16,19 @@ router.post('/', async (req, res) => {
     const { error } = validate(req.body)
     if (error) return res.status(400).send(error.details[0].message)
 
-    let user = new User({
-        engFirstName: req.body.engFirstName,
-        engLastName: req.body.engLastName,
-        email: req.body.email,
-        disable: req.body.disable
-    })
+    let user = await User.findOne({ username: req.body.username })
+    if (user) return res.status(400).send('User already register')
+
+    user = new User(_.pick(req.body, ['username', 'email', 'firstNameEng', 'lastNameEng', 'password']))
+
+    //Hashing Password
+    const salt = await bcrypt.genSalt(10)
+    user.password = await bcrypt.hash(user.password, salt)
+    console.log(user)
 
     user = await user.save()
 
-    res.send(user)
+    res.send(_.pick(user, ['_id', 'username', 'email']))
 })
-
-
 
 module.exports = router;
