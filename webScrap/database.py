@@ -52,20 +52,14 @@ def insertHashTag(dict):
         return temp["_id"]
 
 
-def update_tags(dict, new_tag, tourID):
-    temp = toursCol.find_one({"tourID":dict["tourID"]})
-    temptag = toursCol.find_one({"hashtags._id":new_tag["_id"]})
+def update_tags(new_tag, tourID):
+    temp = toursCol.find_one({"tourID": tourID})
     if(temp):
-        if(not temptag):
-            _id = toursCol.update({'tourID': tourID}, {'$push': {'hashtags': new_tag}})
-            print("Inserted!")
-            print(temp["_id"])
-            return temp["_id"]
-        else:
-            myquery = {"hashtags._id":new_tag["_id"]}
-            newValues = { "$set": new_tag }
-            _id = toursCol.update_one(myquery, newValues)
-            print("Updated!")
-            print(temp["_id"])
-            return temp["_id"]
+        _id = toursCol.update(
+            {'tourID': tourID}, 
+            {"$addToSet": {"hashtags": new_tag}}
+        )
+        print("Inserted!")
+        print(temp["_id"])
+        return temp["_id"]
         

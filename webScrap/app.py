@@ -146,9 +146,9 @@ for j in range(len(searchLink)):
             })
 
         title = soup.select_one('.china_title').select_one('h2').getText().lstrip()
-        title = re.sub('【[^>]+】', '', title)
-        title = re.sub('《[^>]+》', '', title)
-        title = re.sub('\([^>]+\)', '', title)
+        title = re.sub('\【.*?\】', '', title)
+        title = re.sub('\《.*?\》', '', title)
+        title = re.sub('\(.*?\)', '', title)
 
         tourID = soup.select_one('.refCode').getText().lstrip().split('(')[1].split(')')[0]
         place = soup.select("a[href*=dest]")
@@ -270,4 +270,6 @@ for j in range(len(searchLink)):
     # print(Tour)
 
     # print()
+
+browser.close()
 
