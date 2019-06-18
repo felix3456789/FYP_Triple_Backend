@@ -24,7 +24,7 @@ router.get('/:id', async (req, res) => {
 })
 
 router.get('/feature/tour', async (req, res) => {
-    var count = await Tour.count();
+    var count = await Tour.countDocuments();
     var random = Math.floor(Math.random() * count);
     const tours = await Tour.find({ feature : true }).limit(5).skip(random)
     const convTours = tours.map((tour) => { return tour.toObject() })
