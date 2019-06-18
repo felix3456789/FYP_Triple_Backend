@@ -10,62 +10,42 @@ def insertTour(dict):
     temp = toursCol.find_one({"tourID":dict["tourID"]})
     if(not temp):
         _id = toursCol.insert_one(dict)
-        print('Inserted!')
-        print(_id.inserted_id)
         return _id.inserted_id
     else:
         myquery = { "tourID": dict["tourID"] }
         newValues = { "$set": dict }
         _id = toursCol.update_one(myquery, newValues)
-        print("Updated!")
-        print(temp["_id"])
         return temp["_id"]
 
 def insertTag(dict):
     tempTag = tagsCol.find_one({"title":dict["title"]})
     if(not tempTag):
         _id = tagsCol.insert_one(dict)
-        print('Inserted!')
-        print(_id.inserted_id)
         return _id.inserted_id
     else:
         myquery = { "title": dict["title"] }
         newValues = { "$set": dict }
         _id = tagsCol.update_one(myquery, newValues)
-        print("Updated!")
-        print(tempTag["_id"])
         return tempTag["_id"]
 
 def insertHashTag(dict):
     temp = hashtagsCol.find_one({"title":dict["title"]})
     if(not temp):
         _id = hashtagsCol.insert_one(dict)
-        print('Inserted!')
-        print(_id.inserted_id)
         return _id.inserted_id
     else:
         myquery = { "title": dict["title"] }
         newValues = { "$set": dict }
         _id = hashtagsCol.update_one(myquery, newValues)
-        print("Updated!")
-        print(temp["_id"])
         return temp["_id"]
 
 
-def update_tags(dict, new_tag, tourID):
-    temp = toursCol.find_one({"tourID":dict["tourID"]})
-    temptag = toursCol.find_one({"hashtags._id":new_tag["_id"]})
+def update_tags(new_tag, tourID):
+    temp = toursCol.find_one({"tourID": tourID})
     if(temp):
-        if(not temptag):
-            _id = toursCol.update({'tourID': tourID}, {'$push': {'hashtags': new_tag}})
-            print("Inserted!")
-            print(temp["_id"])
-            return temp["_id"]
-        else:
-            myquery = {"hashtags._id":new_tag["_id"]}
-            newValues = { "$set": new_tag }
-            _id = toursCol.update_one(myquery, newValues)
-            print("Updated!")
-            print(temp["_id"])
-            return temp["_id"]
+        _id = toursCol.update(
+            {'tourID': tourID}, 
+            {"$addToSet": {"hashtags": new_tag}}
+        )
+        return temp["_id"]
         
