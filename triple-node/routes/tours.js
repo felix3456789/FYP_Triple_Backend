@@ -23,10 +23,12 @@ router.get('/:id', async (req, res) => {
     res.send(convTours)
 })
 
-router.get('/feature', async (req, res) => {
-    const tours = await Tour.aggregate([{ $sample: { size: 5 } }, {$match: { feature : true } }])
-    if (!tours) return res.status(404).send('The course not found')
+router.get('/feature/tour', async (req, res) => {
+    var count = await Tour.count();
+    var random = Math.floor(Math.random() * count);
+    const tours = await Tour.find({ feature : true }).limit(5).skip(random)
     const convTours = tours.map((tour) => { return tour.toObject() })
+    // res.send(JSON.stringify(convTours))
     console.log(new Date())
     res.send(convTours)
 })
