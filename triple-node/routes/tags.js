@@ -16,9 +16,9 @@ router.get('/', async (req, res) => {
 })
 
 router.get('/limit/:count', async (req, res) => {
-    var count = Tag.count();
+    var count = await Tag.count();
     var random = Math.floor(Math.random() * count);
-    limit = parseInt(req.params.count) >= count? 20:parseInt(req.params.count)
+    limit = parseInt(req.params.count) >= count ? 20 : parseInt(req.params.count)
     const tags = await Tag.find().limit(limit).skip(random)
     const convTags = tags.map((tag) => { return tag.toObject().title })
     // res.send(JSON.stringify(convTours))
