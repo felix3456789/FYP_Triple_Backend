@@ -23,6 +23,15 @@ router.get('/:id', async (req, res) => {
     res.send(convTours)
 })
 
+router.get('/feature', async (req, res) => {
+    const tours = await Tour.aggregate([{ $sample: { size: 5 } }, {$match: { feature : true } }])
+    if (!tours) return res.status(404).send('The course not found')
+    const convTours = tours.map((tour) => { return tour.toObject() })
+    console.log(new Date())
+    res.send(convTours)
+})
+
+
 // router.post('/', (req, res) => {
 //     const { error } = validateCourse(req.body)
 

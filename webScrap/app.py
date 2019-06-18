@@ -183,6 +183,7 @@ for j in range(len(searchLink)):
                     "_id": ObjectId(_id),
                     "title": city,
                 })
+            
             print("Tour title: ", title)
             check = database.checkPrices(tourID)
             if(len(check) < 1):
@@ -292,6 +293,7 @@ for j in range(len(searchLink)):
                 "Disable": False,
                 "days": days,
                 "hashtags": hashtags,
+                "notes": notes,
                 "updatedBy": datetime.now(),
             }
 
