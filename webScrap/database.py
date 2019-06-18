@@ -49,3 +49,14 @@ def update_tags(new_tag, tourID):
         )
         return temp["_id"]
         
+
+def checkPrices(tourID):
+    temp = toursCol.find_one({"tourID": tourID})
+    if(not temp):
+        result = []
+        return result
+    if(temp):
+        query = {"tourID": tourID, "prices": {"$exists": True}}
+        cursor = toursCol.find(query)
+        results = list(cursor) 
+        return results
