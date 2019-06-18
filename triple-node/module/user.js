@@ -50,6 +50,16 @@ const userSchema = new mongoose.Schema({
     Friend: {
         type: [Object]
     },
+    recommendTags: {
+        type: [String]
+    },
+    history: {
+        type: [String]
+    },
+    historyCounter: {
+        type: Number,
+        default: 0
+    },
     disable: {
         type: Boolean,
         default: false
