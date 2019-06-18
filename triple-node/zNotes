@@ -4,6 +4,21 @@ export triple_jwtPrivateKey=triplePrivateKey
 find tour date between
 {availableDate:{$gte:new ISODate("2019-06-22T00:00:00Z"),$lte:new ISODate("2019-06-23T00:00:00Z")}}
 
+- tour api page
+-tour API:
+- feature
+- Search by tags/tourId
+- Search by country
+
+
+- Tour Like
+- Comment
+
+- Purchase history
+
+
+User history(100)
+User mayLike
 
 User{
 Email
