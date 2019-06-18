@@ -1,9 +1,16 @@
 set ENV
 export triple_jwtPrivateKey=triplePrivateKey
-
+$ENV:triple_jwtPrivateKey="triplePrivateKey"
 find tour date between
 {availableDate:{$gte:new ISODate("2019-06-22T00:00:00Z"),$lte:new ISODate("2019-06-23T00:00:00Z")}}
 
+
+wilson:
+-tour feature limit5~10 random
+-tour search (tourId, tag/hashtag, time)
+
+Chuen:
+- Recommender
 
 User{
 Email
