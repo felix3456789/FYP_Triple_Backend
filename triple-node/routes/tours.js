@@ -4,8 +4,6 @@ const router = express.Router()
 
 const { Tour, validate } = require('../module/tour')
 
-
-
 router.get('/', async (req, res) => {
     const tours = await Tour.find().limit(20)
     const convTours = tours.map((tour) => { return tour.toObject() })
@@ -13,6 +11,14 @@ router.get('/', async (req, res) => {
     console.log(new Date())
     res.send(convTours)
 
+})
+
+router.get('/search/:keyword', async (req, res) => {
+    const searchString = req.params.keyword
+    const tours = await Tour.find({$text: {$search: searchString}}).limit(10)
+    const convTours = tours.map((tour) => { return tour.toObject() })
+    console.log(new Date())
+    res.send(convTours)
 })
 
 router.get('/:id', async (req, res) => {
@@ -28,7 +34,6 @@ router.get('/feature/tour', async (req, res) => {
     var random = Math.floor(Math.random() * count);
     const tours = await Tour.find({ feature : true }).limit(5).skip(random)
     const convTours = tours.map((tour) => { return tour.toObject() })
-    // res.send(JSON.stringify(convTours))
     console.log(new Date())
     res.send(convTours)
 })

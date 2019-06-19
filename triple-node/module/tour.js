@@ -1,9 +1,11 @@
 const mongoose = require('mongoose')
 const Joi = require('joi')
 
+mongoose.set('useCreateIndex', true);
+
 const tourSchema = new mongoose.Schema({
     tourID: String,
-    title: { type: String, required: true },
+    title: {type: String, required: true},
     day: Number,
     tags: [{
         id: Number,
@@ -27,8 +29,9 @@ const tourSchema = new mongoose.Schema({
     updateBy: Date
 })
 
-const Tour = mongoose.model('Tour', tourSchema)
+tourSchema.index({title: 'text', tourID: 'text', 'tags.title': 'text', 'hashtags.title': 'text'})
 
+const Tour = mongoose.model('tours', tourSchema)
 // function validateCourse(course) {
 //     const schema = {
 //         name: Joi.string().min(3).required()
