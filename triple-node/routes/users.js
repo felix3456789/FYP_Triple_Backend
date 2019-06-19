@@ -21,6 +21,12 @@ router.get('/me', auth, async (req, res) => {
     res.send(users)
 })
 
+router.get('/recommendTag', auth, async (req, res) => {
+    const recommendTags = await User.findOne({ username: req.user.username }, { recommendTags: 1, username: 1 })
+    console.log(recommendTags)
+    res.send(recommendTags)
+})
+
 //Register
 router.post('/', async (req, res) => {
     const { error } = validate(req.body)
