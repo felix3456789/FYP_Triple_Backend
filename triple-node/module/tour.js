@@ -5,7 +5,7 @@ mongoose.set('useCreateIndex', true);
 
 const tourSchema = new mongoose.Schema({
     tourID: String,
-    title: {type: String, required: true},
+    title: { type: String, required: true },
     day: Number,
     tags: [{
         id: Number,
@@ -18,7 +18,7 @@ const tourSchema = new mongoose.Schema({
     image: [String],
     detail: String,
     Disable: { type: Boolean, default: false },
-    Feature: { type: Boolean, default: false },
+    feature: { type: Boolean, default: false },
     days: [{
         day: String,
         title: String,
@@ -29,7 +29,7 @@ const tourSchema = new mongoose.Schema({
     updateBy: Date
 })
 
-tourSchema.index({title: 'text', tourID: 'text', 'tags.title': 'text', 'hashtags.title': 'text'})
+tourSchema.index({ title: 'text', tourID: 'text', 'tags.title': 'text', 'hashtags.title': 'text' })
 
 const Tour = mongoose.model('tours', tourSchema)
 // function validateCourse(course) {
