@@ -184,6 +184,8 @@ for j in range(len(searchLink)):
                     "title": city,
                 })
             
+            notes = soup.select_one('div.tip_box div.property_right').getText().lstrip()
+
             print("Tour title: ", title)
             check = database.checkPrices(tourID)
             if(len(check) < 1):
@@ -281,6 +283,9 @@ for j in range(len(searchLink)):
                 "tourID": tourID,
                 "feature": feature,
                 "title": title,
+                "rating": 0.0,
+                "commentCount": 0,
+                "likeCount": 0,
                 "country": country,
                 "city": city,
                 "day": number_of_days,
