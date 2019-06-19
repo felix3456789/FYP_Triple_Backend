@@ -29,7 +29,7 @@ const tourSchema = new mongoose.Schema({
     updateBy: Date
 })
 
-tourSchema.index({'$**': 'text'})
+tourSchema.index({title: 'text', tourID: 'text', 'tags.title': 'text', 'hashtags.title': 'text'})
 
 const Tour = mongoose.model('tours', tourSchema)
 // function validateCourse(course) {
