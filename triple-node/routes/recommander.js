@@ -7,8 +7,7 @@ const { User } = require('../module/user')
 const { Tour } = require('../module/tour')
 const _ = require('lodash')
 
-//router.post('/insert', auth,async (req, res) => {
-router.post('/insert', async (req, res) => {
+router.post('/insert', auth, async (req, res) => {
     const { error } = validate(req.body)
     if (error) return res.status(400).send(error.details[0].message)
 
@@ -29,7 +28,7 @@ router.post('/insert', async (req, res) => {
     user.set({ historyCounter: newHistoryCounter })
     await user.save()
     console.log(user.historyCounter)
-    res.send(`Counter:${user.historyCounter}`)
+    res.send("History Updated!")
 })
 
 

@@ -31,9 +31,13 @@ router.get('/:id', async (req, res) => {
 
 router.get('/feature/tour', async (req, res) => {
     var count = await Tour.countDocuments({ feature: true });
-    var random = Math.floor(Math.random() * count);
-    const tours = await Tour.find({ feature: true }).limit(5).skip(random)
-    console.log(random)
+    const tours = []
+    for (let i = 0; i < 5; i++) {
+        var random = Math.floor(Math.random() * count);
+        const tour = await Tour.findOne({ feature: true }, { tourID: 1, image: 1, title: 1 }).skip(random)
+        console.log(tour)
+        tours.push(tour)
+    }
     const convTours = tours.map((tour) => { return tour.toObject() })
     console.log(new Date())
     res.send(convTours)
