@@ -3,6 +3,7 @@ const express = require('express')
 const _ = require('lodash')
 const bcrypt = require('bcrypt')
 const router = express.Router()
+const auth = require('../middleware/auth')
 
 const { User, validate } = require('../module/user')
 
@@ -12,6 +13,15 @@ router.get('/', async (req, res) => {
     res.send(users)
 })
 
+router.get('/me', auth, async (req, res) => {
+    // User.req.username
+
+    const users = await User.findOne({ username: req.user.username }, { password: 0 })
+    console.log(users)
+    res.send(users)
+})
+
+//Register
 router.post('/', async (req, res) => {
     const { error } = validate(req.body)
     if (error) return res.status(400).send(error.details[0].message)

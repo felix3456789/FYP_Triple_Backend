@@ -10,10 +10,9 @@ const app = express()
 const home = require('./routes/home')
 const tours = require('./routes/tours')
 const users = require('./routes/users')
-
 const tags = require('./routes/tags')
-
 const auth = require('./routes/auth')
+const recommander = require('./routes/recommander')
 
 if (!config.get('jwtPrivateKey')) {
     console.error('FATAL ERROR: jwtPrivateKey is not defined.')
@@ -36,10 +35,9 @@ app.use(express.static('public'))
 app.use('/', home)
 app.use('/api/tour', tours)
 app.use('/api/user', users)
-
 app.use('/api/tag', tags)
-
 app.use('/api/auth', auth)
+app.use('/api/recommander', recommander)
 
 app.use(logger)
 

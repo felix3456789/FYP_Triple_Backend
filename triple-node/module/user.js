@@ -1,5 +1,7 @@
 const mongoose = require('mongoose')
 const Joi = require('joi')
+const jwt = require('jsonwebtoken')
+const config = require('config')
 
 const userSchema = new mongoose.Schema({
     username: {
@@ -51,7 +53,7 @@ const userSchema = new mongoose.Schema({
         type: [Object]
     },
     recommendTags: {
-        type: [String]
+        type: [Object]
     },
     history: {
         type: [String]
@@ -63,8 +65,17 @@ const userSchema = new mongoose.Schema({
     disable: {
         type: Boolean,
         default: false
+    },
+    role: {
+        type: String,
+        default: "user"
     }
 })
+
+userSchema.methods.generateAuthToken = function () {
+    const token = jwt.sign({ username: this.username, role: this.role }, config.get('jwtPrivateKey'))
+    return token
+}
 
 const User = mongoose.model('User', userSchema)
 
