@@ -15,7 +15,7 @@ router.get('/', async (req, res) => {
 
 router.get('/search/:keyword', async (req, res) => {
     const searchString = req.params.keyword
-    const tours = await Tour.find({$text: {$search: searchString}}).limit(10)
+    const tours = await Tour.find({ $text: { $search: searchString } }).limit(10)
     const convTours = tours.map((tour) => { return tour.toObject() })
     console.log(new Date())
     res.send(convTours)
@@ -30,9 +30,10 @@ router.get('/:id', async (req, res) => {
 })
 
 router.get('/feature/tour', async (req, res) => {
-    var count = await Tour.countDocuments();
+    var count = await Tour.countDocuments({ feature: true });
     var random = Math.floor(Math.random() * count);
-    const tours = await Tour.find({ feature : true }).limit(5).skip(random)
+    const tours = await Tour.find({ feature: true }).limit(5).skip(random)
+    console.log(random)
     const convTours = tours.map((tour) => { return tour.toObject() })
     console.log(new Date())
     res.send(convTours)
