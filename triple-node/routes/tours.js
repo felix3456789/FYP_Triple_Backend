@@ -21,6 +21,20 @@ router.get('/search/:keyword', async (req, res) => {
     res.send(convTours)
 })
 
+router.get('/recommended/:keyword', async (req, res) => {
+    const searchString = req.params.keyword
+    const count = await Tour.countDocuments({ $text: { $search: searchString } })
+    const tours = []
+    for (let i = 0; i < 10; i++) {
+        var random = Math.floor(Math.random() * count);
+        const tour = await Tour.findOne({ $text: { $search: searchString } }, {prices: 0, availableDate: 0, days: 0, notes: 0}).skip(random)
+        tours.push(tour)
+    }
+    const convTours = tours.map((tour) => { return tour.toObject() })
+    console.log(new Date())
+    res.send(convTours)
+})
+
 router.get('/:id', async (req, res) => {
     const tours = await Tour.find({ tourID: req.params.id })
     if (!tours) return res.status(404).send('The course not found')
