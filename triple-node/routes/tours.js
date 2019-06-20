@@ -27,7 +27,7 @@ router.get('/search/:keyword', async (req, res) => {
             { 'days.stay': { $regex: searchString, $options: 'i' } }
         ]
     }
-    const tours = await Tour.find(query, {prices: 0, availableDate: 0, days: 0, notes: 0}).limit(10)
+    const tours = await Tour.find(query, { prices: 0, availableDate: 0, days: 0, notes: 0 }).limit(10)
     const convTours = tours.map((tour) => { return tour.toObject() })
     console.log(new Date())
     res.send(convTours)
@@ -37,10 +37,10 @@ router.get('/recommanded/:keyword', async (req, res) => {
     const searchString = req.params.keyword
     const tours = await Tour.aggregate([
         {
-            $match: {'hashtags.title': searchString}
-        },{
-            $sample: {size: 5}
-        },{
+            $match: { 'hashtags.title': searchString }
+        }, {
+            $sample: { size: 5 }
+        }, {
             $project: {
                 prices: 0,
                 days: 0,
@@ -65,13 +65,15 @@ router.get('/:id', async (req, res) => {
     res.send(convTours)
 })
 
-router.get('/feature/tour', async (req, res) => {
+router.get('/feature/tour/:count', async (req, res) => {
+
+    limit = parseInt(req.params.count) >= count ? 5 : parseInt(req.params.count)
     const tours = await Tour.aggregate([
         {
-            $match: {feature: true}
-        },{
-            $sample: {size: 5}
-        },{
+            $match: { feature: true }
+        }, {
+            $sample: { size: limit }
+        }, {
             $project: {
                 tourID: 1,
                 image: 1,
