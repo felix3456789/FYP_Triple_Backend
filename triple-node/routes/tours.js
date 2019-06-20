@@ -15,7 +15,20 @@ router.get('/', async (req, res) => {
 
 router.get('/search/:keyword', async (req, res) => {
     const searchString = req.params.keyword
-    const tours = await Tour.find({ $text: { $search: searchString } }, {prices: 0, availableDate: 0, days: 0, notes: 0}).limit(10)
+    var query = {
+        $or:[
+            {title:{$regex: searchString, $options: 'i'}},
+            {tourID:{$regex: searchString, $options: 'i'}},
+            {'hashtags.title':{$regex: searchString, $options: 'i'}},
+            {'tags.title':{$regex: searchString, $options: 'i'}},
+            {'days.title':{$regex: searchString, $options: 'i'}},
+            {'days.content':{$regex: searchString, $options: 'i'}},
+            {'days.eat':{$regex: searchString, $options: 'i'}},
+            {'days.stay':{$regex: searchString, $options: 'i'}}
+        ]
+    }
+    const tours = await Tour.find(query, {prices: 0, availableDate: 0, days: 0, notes: 0}).limit(10)
+    console.log(tours)
     const convTours = tours.map((tour) => { return tour.toObject() })
     console.log(new Date())
     res.send(convTours)
