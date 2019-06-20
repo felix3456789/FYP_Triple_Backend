@@ -11,7 +11,7 @@ router.post('/insert', auth, async (req, res) => {
     const { error } = validate(req.body)
     if (error) return res.status(400).send(error.details[0].message)
 
-    let user = await User.findOne({ username: req.body.username })
+    let user = await User.findOne({ username: req.user.username })
     if (!user) return res.status(400).send('User not found!')
 
     let newHistoryCounter = user.historyCounter + 1
@@ -81,7 +81,6 @@ async function recommander(historyArr) {
 
 function validate(user) {
     const schema = {
-        username: Joi.string().min(5).max(20).required(),
         tourId: Joi.string().required()
     }
     return Joi.validate(user, schema)
