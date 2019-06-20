@@ -21,7 +21,7 @@ router.get('/search/:keyword', async (req, res) => {
     res.send(convTours)
 })
 
-router.get('/recommended/:keyword', async (req, res) => {
+router.get('/recommanded/:keyword', async (req, res) => {
     const searchString = req.params.keyword
     const count = await Tour.countDocuments({ $text: { $search: searchString } })
     const tours = []
