@@ -16,19 +16,18 @@ router.get('/', async (req, res) => {
 router.get('/search/:keyword', async (req, res) => {
     const searchString = req.params.keyword
     var query = {
-        $or:[
-            {title:{$regex: searchString, $options: 'i'}},
-            {tourID:{$regex: searchString, $options: 'i'}},
-            {'hashtags.title':{$regex: searchString, $options: 'i'}},
-            {'tags.title':{$regex: searchString, $options: 'i'}},
-            {'days.title':{$regex: searchString, $options: 'i'}},
-            {'days.content':{$regex: searchString, $options: 'i'}},
-            {'days.eat':{$regex: searchString, $options: 'i'}},
-            {'days.stay':{$regex: searchString, $options: 'i'}}
+        $or: [
+            { title: { $regex: searchString, $options: 'i' } },
+            { tourID: { $regex: searchString, $options: 'i' } },
+            { 'hashtags.title': { $regex: searchString, $options: 'i' } },
+            { 'tags.title': { $regex: searchString, $options: 'i' } },
+            { 'days.title': { $regex: searchString, $options: 'i' } },
+            { 'days.content': { $regex: searchString, $options: 'i' } },
+            { 'days.eat': { $regex: searchString, $options: 'i' } },
+            { 'days.stay': { $regex: searchString, $options: 'i' } }
         ]
     }
-    const tours = await Tour.find(query, {prices: 0, availableDate: 0, days: 0, notes: 0}).limit(10)
-    console.log(tours)
+    const tours = await Tour.find(query, { prices: 0, availableDate: 0, days: 0, notes: 0 }).limit(10)
     const convTours = tours.map((tour) => { return tour.toObject() })
     console.log(new Date())
     res.send(convTours)
@@ -40,7 +39,7 @@ router.get('/recommanded/:keyword', async (req, res) => {
     const tours = []
     for (let i = 0; i < 10; i++) {
         var random = Math.floor(Math.random() * count);
-        const tour = await Tour.findOne({ $text: { $search: searchString } }, {prices: 0, availableDate: 0, days: 0, notes: 0}).skip(random)
+        const tour = await Tour.findOne({ $text: { $search: searchString } }, { prices: 0, availableDate: 0, days: 0, notes: 0 }).skip(random)
         tours.push(tour)
     }
     const convTours = tours.map((tour) => { return tour.toObject() })
@@ -62,7 +61,6 @@ router.get('/feature/tour', async (req, res) => {
     for (let i = 0; i < 5; i++) {
         var random = Math.floor(Math.random() * count);
         const tour = await Tour.findOne({ feature: true }, { tourID: 1, image: 1, title: 1 }).skip(random)
-        console.log(tour)
         tours.push(tour)
     }
     const convTours = tours.map((tour) => { return tour.toObject() })
