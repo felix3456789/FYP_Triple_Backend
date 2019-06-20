@@ -28,7 +28,6 @@ router.get('/search/:keyword', async (req, res) => {
         ]
     }
     const tours = await Tour.find(query, {prices: 0, availableDate: 0, days: 0, notes: 0}).limit(10)
-    console.log(tours)
     const convTours = tours.map((tour) => { return tour.toObject() })
     console.log(new Date())
     res.send(convTours)
@@ -36,14 +35,23 @@ router.get('/search/:keyword', async (req, res) => {
 
 router.get('/recommanded/:keyword', async (req, res) => {
     const searchString = req.params.keyword
-    const count = await Tour.countDocuments({ $text: { $search: searchString } })
-    const tours = []
-    for (let i = 0; i < 10; i++) {
-        var random = Math.floor(Math.random() * count);
-        const tour = await Tour.findOne({ $text: { $search: searchString } }, {prices: 0, availableDate: 0, days: 0, notes: 0}).skip(random)
-        tours.push(tour)
-    }
-    const convTours = tours.map((tour) => { return tour.toObject() })
+    const tours = await Tour.aggregate([
+        {
+            $match: {'hashtags.title': searchString}
+        },{
+            $sample: {size: 5}
+        },{
+            $project: {
+                prices: 0,
+                days: 0,
+                availableDate: 0,
+                commentCount: 0,
+                likeCount: 0,
+                rating: 0 
+            }
+        }
+    ]);
+    const convTours = tours
     console.log(new Date())
     res.send(convTours)
 })
@@ -57,15 +65,20 @@ router.get('/:id', async (req, res) => {
 })
 
 router.get('/feature/tour', async (req, res) => {
-    var count = await Tour.countDocuments({ feature: true });
-    const tours = []
-    for (let i = 0; i < 5; i++) {
-        var random = Math.floor(Math.random() * count);
-        const tour = await Tour.findOne({ feature: true }, { tourID: 1, image: 1, title: 1 }).skip(random)
-        console.log(tour)
-        tours.push(tour)
-    }
-    const convTours = tours.map((tour) => { return tour.toObject() })
+    const tours = await Tour.aggregate([
+        {
+            $match: {feature: true}
+        },{
+            $sample: {size: 5}
+        },{
+            $project: {
+                tourID: 1, 
+                image: 1, 
+                title: 1
+            }
+        }
+    ]);
+    const convTours = tours
     console.log(new Date())
     res.send(convTours)
 })
