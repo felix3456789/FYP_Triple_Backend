@@ -37,15 +37,33 @@ async function recommander(historyArr) {
 
     let newRecommandTags = []
     const allHashtag = []
-    await Promise.all(historyArr.map(async (tour) => {
+    const numOfHistory = historyArr.length
+    await Promise.all(historyArr.map(async (tour, index) => {
         const hashtags = await Tour.find({ tourID: tour }, { '_id': 0, 'hashtags': 1 })
 
         hashtags[0].toObject().hashtags.map(hashtag => {
-            allHashtag.push(hashtag.title)
+            let ratio = 1
+            if (index > Math.floor(0.4 * numOfHistory) && index <= Math.floor(0.6 * numOfHistory)) {
+                ratio = 2
+            } else if (index > Math.floor(0.6 * numOfHistory) && index <= Math.floor(0.8 * numOfHistory)) {
+                ratio = 5
+            } else if (index > Math.floor(0.8 * numOfHistory) && index <= Math.floor(0.9 * numOfHistory)) {
+                ratio = 10
+            } else if (index > Math.floor(0.9 * numOfHistory) && index <= Math.floor(0.95 * numOfHistory)) {
+                ratio = 25
+            }
+            else if (index > Math.floor(0.95 * numOfHistory) && index <= Math.floor(numOfHistory)) {
+                ratio = 40
+            }
+
+            for (var i = 0; i < ratio; i++) {
+                allHashtag.push(hashtag.title)
+            }
         })
     }))
-    const groupTag = _.groupBy(allHashtag)
 
+
+    const groupTag = _.groupBy(allHashtag)
     for (var tag in groupTag) {
         const newTag = {
             title: tag,
@@ -54,7 +72,7 @@ async function recommander(historyArr) {
         newRecommandTags.push(newTag)
     }
 
-    newRecommandTags = _.sortBy(newRecommandTags)
+    newRecommandTags = _.orderBy(newRecommandTags, ['score'], ['desc'])
     newRecommandTags = _.take(newRecommandTags, 10)
     console.log(newRecommandTags)
     return newRecommandTags
