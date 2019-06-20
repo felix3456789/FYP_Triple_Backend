@@ -47,7 +47,8 @@ router.get('/recommanded/:keyword', async (req, res) => {
                 availableDate: 0,
                 commentCount: 0,
                 likeCount: 0,
-                rating: 0
+                rating: 0,
+                notes: 0
             }
         }
     ]);
