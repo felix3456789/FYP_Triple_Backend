@@ -16,15 +16,15 @@ router.get('/', async (req, res) => {
 router.get('/search/:keyword', async (req, res) => {
     const searchString = req.params.keyword
     var query = {
-        $or:[
-            {title:{$regex: searchString, $options: 'i'}},
-            {tourID:{$regex: searchString, $options: 'i'}},
-            {'hashtags.title':{$regex: searchString, $options: 'i'}},
-            {'tags.title':{$regex: searchString, $options: 'i'}},
-            {'days.title':{$regex: searchString, $options: 'i'}},
-            {'days.content':{$regex: searchString, $options: 'i'}},
-            {'days.eat':{$regex: searchString, $options: 'i'}},
-            {'days.stay':{$regex: searchString, $options: 'i'}}
+        $or: [
+            { title: { $regex: searchString, $options: 'i' } },
+            { tourID: { $regex: searchString, $options: 'i' } },
+            { 'hashtags.title': { $regex: searchString, $options: 'i' } },
+            { 'tags.title': { $regex: searchString, $options: 'i' } },
+            { 'days.title': { $regex: searchString, $options: 'i' } },
+            { 'days.content': { $regex: searchString, $options: 'i' } },
+            { 'days.eat': { $regex: searchString, $options: 'i' } },
+            { 'days.stay': { $regex: searchString, $options: 'i' } }
         ]
     }
     const tours = await Tour.find(query, {prices: 0, availableDate: 0, days: 0, notes: 0}).limit(10)
@@ -47,7 +47,7 @@ router.get('/recommanded/:keyword', async (req, res) => {
                 availableDate: 0,
                 commentCount: 0,
                 likeCount: 0,
-                rating: 0 
+                rating: 0
             }
         }
     ]);
@@ -72,8 +72,8 @@ router.get('/feature/tour', async (req, res) => {
             $sample: {size: 5}
         },{
             $project: {
-                tourID: 1, 
-                image: 1, 
+                tourID: 1,
+                image: 1,
                 title: 1
             }
         }
