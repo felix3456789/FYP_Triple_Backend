@@ -26,7 +26,10 @@ const tourSchema = new mongoose.Schema({
         eat: [String],
         stay: String
     }],
-    updateBy: Date
+    updateBy: Date,
+    commentCount: Number,
+    likeCount: Number,
+    rating: Number,
 })
 
 tourSchema.index({ title: 'text', tourID: 'text', 'tags.title': 'text', 'hashtags.title': 'text' })

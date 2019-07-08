@@ -59,7 +59,7 @@ router.get('/recommanded/:keyword', async (req, res) => {
 
 router.get('/:id', async (req, res) => {
     const tours = await Tour.find({ tourID: req.params.id })
-    if (!tours) return res.status(404).send('The course not found')
+    if (!tours) return res.status(404).send('The tour not found')
     const convTours = tours.map((tour) => { return tour.toObject() })
     console.log(new Date())
     res.send(convTours)
@@ -67,17 +67,19 @@ router.get('/:id', async (req, res) => {
 
 router.get('/feature/tour/:count', async (req, res) => {
 
-    limit = parseInt(req.params.count) >= count ? 5 : parseInt(req.params.count)
     const tours = await Tour.aggregate([
         {
             $match: { feature: true }
         }, {
-            $sample: { size: limit }
+            $sample: { size: parseInt(req.params.count) }
         }, {
             $project: {
                 tourID: 1,
                 image: 1,
-                title: 1
+                title: 1,
+                tags: 1,
+                originalPrice: 1,
+                salesPrice: 1,
             }
         }
     ]);

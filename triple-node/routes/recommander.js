@@ -8,11 +8,12 @@ const { Tour } = require('../module/tour')
 const _ = require('lodash')
 
 router.post('/insert', auth, async (req, res) => {
+    res.send("History Updated!")
     const { error } = validate(req.body)
-    if (error) return res.status(400).send(error.details[0].message)
+    if (error) return 0
 
     let user = await User.findOne({ username: req.user.username })
-    if (!user) return res.status(400).send('User not found!')
+    if (!user) return 0
 
     let newHistoryCounter = user.historyCounter + 1
     let newHistoryArr = user.history
@@ -28,7 +29,7 @@ router.post('/insert', auth, async (req, res) => {
     user.set({ historyCounter: newHistoryCounter })
     await user.save()
     console.log(user.historyCounter)
-    res.send("History Updated!")
+
 })
 
 
@@ -50,10 +51,10 @@ async function recommander(historyArr) {
             } else if (index > Math.floor(0.8 * numOfHistory) && index <= Math.floor(0.9 * numOfHistory)) {
                 ratio = 10
             } else if (index > Math.floor(0.9 * numOfHistory) && index <= Math.floor(0.95 * numOfHistory)) {
-                ratio = 25
+                ratio = 20
             }
             else if (index > Math.floor(0.95 * numOfHistory) && index <= Math.floor(numOfHistory)) {
-                ratio = 40
+                ratio = 45
             }
 
             for (var i = 0; i < ratio; i++) {
