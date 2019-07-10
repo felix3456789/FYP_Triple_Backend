@@ -68,9 +68,9 @@ for j in range(len(searchLink)):
             soup = BeautifulSoup(browser.page_source, "lxml")
 
             # find days
-            day = soup.select("div[class*='segment_day']")
-            tag = soup.select_one('.product_description').getText().lstrip()
-            number_of_days = len(day)
+            # day = soup.select("div[class*='segment_day']")
+            tag = soup.select_one('.product-name-english').getText().lstrip()
+            # number_of_days = len(day)
 
             tagCollection = tag.split("、")
             tagList = []
@@ -80,13 +80,11 @@ for j in range(len(searchLink)):
                 tagCollection[i] = tagCollection[i].split(')')[0]
                 tags = {
                     "title": tagCollection[i],
-                    "updatedBy": datetime.now()
                 }
                 _id = database.insertTag(tags)
                 tagList.append( {
                     "_id": ObjectId(_id),
-                    "title": tagCollection[i],
-                    "updatedBy": datetime.now()
+                    "title": tagCollection[i]
                 })
 
             if(len(tagCollection)>0):
@@ -94,212 +92,213 @@ for j in range(len(searchLink)):
             if (len(tagCollection) == 0):
                 allTag = " "
 
-            availableDate = []
-            dateList = soup.findAll("span",{"class":"on"})
-            for i in range(len(dateList)):
-                date = dateList[i].attrs['date']
-                date = date.split('-')
-                convDate = datetime(int(date[0]),int(date[1]),int(date[2]))
-                availableDate.append(convDate)
+            # availableDate = []
+            # dateList = soup.findAll("span",{"class":"on"})
+            # for i in range(len(dateList)):
+            #     date = dateList[i].attrs['date']
+            #     date = date.split('-')
+            #     convDate = datetime(int(date[0]),int(date[1]),int(date[2]))
+            #     availableDate.append(convDate)
 
 
-            image = []
-            imageList = soup.select('.original_image')[0].findAll('img', {"src":True})
-            for i in range(len(imageList)):
-                imagesrc = imageList[i].attrs['src']
-                image.append(imagesrc)
-            if(soup.select("a[title*='下載行程']")):
-                detail = soup.select("a[title*='下載行程']")
-                detailLink = detail[0].attrs['href']
-            else:
-                detail = " "
+            # image = []
+            # imageList = soup.select('.original_image')[0].findAll('img', {"src":True})
+            # for i in range(len(imageList)):
+            #     imagesrc = imageList[i].attrs['src']
+            #     image.append(imagesrc)
+            # if(soup.select("a[title*='下載行程']")):
+            #     detail = soup.select("a[title*='下載行程']")
+            #     detailLink = detail[0].attrs['href']
+            # else:
+            #     detail = " "
 
-            days = []
-            for i in range(number_of_days):
-                class_name = '.route_day' + str(i)
-                day_info = soup.select(class_name)
-                if(day_info[0].select_one('.segment_content').select_one('p')):
-                    content = day_info[0].select_one('.segment_content').select_one('p').getText().lstrip().replace('\t','').replace('\n','')
-                else:
-                    content = " "
+            # days = []
+            # for i in range(number_of_days):
+            #     class_name = '.route_day' + str(i)
+            #     day_info = soup.select(class_name)
+            #     if(day_info[0].select_one('.segment_content').select_one('p')):
+            #         content = day_info[0].select_one('.segment_content').select_one('p').getText().lstrip().replace('\t','').replace('\n','')
+            #     else:
+            #         content = " "
 
-                if(day_info[0].select_one('.stay')):
-                    stay = day_info[0].select_one('.stay').getText().lstrip().replace('\t','').replace('\n','')
-                else:
-                    stay = " "
+            #     if(day_info[0].select_one('.stay')):
+            #         stay = day_info[0].select_one('.stay').getText().lstrip().replace('\t','').replace('\n','')
+            #     else:
+            #         stay = " "
                 
-                title = day_info[0].select_one('.segment_title').getText().lstrip().split("\n")
+            #     title = day_info[0].select_one('.segment_title').getText().lstrip().split("\n")
 
-                eat = []
-                eatList = day_info[0].findAll("li", {"class":"eat"})
-                for j in range(len(eatList)):
-                    eat.append(eatList[j].getText().lstrip().split("；")[0].split("\n")[0])
+            #     eat = []
+            #     eatList = day_info[0].findAll("li", {"class":"eat"})
+            #     for j in range(len(eatList)):
+            #         eat.append(eatList[j].getText().lstrip().split("；")[0].split("\n")[0])
 
-                days.append( {
-                    "day": day_info[0].select_one('.segment_day').getText().lstrip(),
-                    "title": title[0],
-                    "content": content,
-                    "eat": eat,
-                    "stay": stay
-                })
+            #     days.append( {
+            #         "day": day_info[0].select_one('.segment_day').getText().lstrip(),
+            #         "title": title[0],
+            #         "content": content,
+            #         "eat": eat,
+            #         "stay": stay
+            #     })
 
-            title = soup.select_one('.china_title').select_one('h2').getText().lstrip()
-            title = re.sub('\【.*?\】', '', title)
-            title = re.sub('\《.*?\》', '', title)
-            title = re.sub('\(.*?\)', '', title)
-            title = re.sub('\※.*?\※', '', title)
+            # title = soup.select_one('.china_title').select_one('h2').getText().lstrip()
+            # title = re.sub('\【.*?\】', '', title)
+            # title = re.sub('\《.*?\》', '', title)
+            # title = re.sub('\(.*?\)', '', title)
+            # title = re.sub('\※.*?\※', '', title)
 
-            tourID = soup.select_one('.refCode').getText().lstrip().split('(')[1].split(')')[0]
-            place = soup.select("div.frame_box.path a[href*=dest]")
-            country = place[0].getText().lstrip().split('旅')[0].replace('丨',' ')
-            city = " "
-            if(len(place) >= 2):
-                city = place[1].getText().lstrip().rstrip().split('旅')[0].replace('丨',' ')
-            if(soup.select_one('.original_price')):
-                originalPrice = int(soup.select_one('.original_price').getText().lstrip().rstrip().split('HKD ')[1].replace(',',''))
-                salesPrice = int(soup.select_one('.price_box').select_one('div').select_one('span').getText().lstrip().split('+')[0].replace(',',''))
-            else:
-                originalPrice = int(soup.select_one('.price_box').select_one('div').select_one('span').getText().lstrip().split('+')[0].replace(',',''))
-                salesPrice = None
+            tourID = soup.select_one('.prodct-name').getText().lstrip().split(' ( ')[1].split(' )')[0]
 
-            hashtags = []
-            hashtag = {
-                    "title": country,
-                    "updatedBy": datetime.now()
-                }
-            _id = database.insertHashTag(hashtag)
-            hashtags.append({
-                "_id": ObjectId(_id),
-                "title": country,
-            })
+            # place = soup.select("div.frame_box.path a[href*=dest]")
+            # country = place[0].getText().lstrip().split('旅')[0].replace('丨',' ')
+            # city = " "
+            # if(len(place) >= 2):
+            #     city = place[1].getText().lstrip().rstrip().split('旅')[0].replace('丨',' ')
+            # if(soup.select_one('.original_price')):
+            #     originalPrice = int(soup.select_one('.original_price').getText().lstrip().rstrip().split('HKD ')[1].replace(',',''))
+            #     salesPrice = int(soup.select_one('.price_box').select_one('div').select_one('span').getText().lstrip().split('+')[0].replace(',',''))
+            # else:
+            #     originalPrice = int(soup.select_one('.price_box').select_one('div').select_one('span').getText().lstrip().split('+')[0].replace(',',''))
+            #     salesPrice = None
 
-            if (city != " ") :
-                hashtag = {
-                        "title": city,
-                        "updatedBy": datetime.now()
-                }
-                _id = database.insertHashTag(hashtag)
-                hashtags.append({
-                    "_id": ObjectId(_id),
-                    "title": city,
-                })
+            # hashtags = []
+            # hashtag = {
+            #         "title": country,
+            #         "updatedBy": datetime.now()
+            #     }
+            # _id = database.insertHashTag(hashtag)
+            # hashtags.append({
+            #     "_id": ObjectId(_id),
+            #     "title": country,
+            # })
+
+            # if (city != " ") :
+            #     hashtag = {
+            #             "title": city,
+            #             "updatedBy": datetime.now()
+            #     }
+            #     _id = database.insertHashTag(hashtag)
+            #     hashtags.append({
+            #         "_id": ObjectId(_id),
+            #         "title": city,
+            #     })
             
-            notes = soup.select_one('div.tip_box div.property_right').getText().lstrip()
+            # notes = soup.select_one('div.tip_box div.property_right').getText().lstrip()
 
-            print("Tour title: ", title)
-            check = database.checkPrices(tourID)
-            if(len(check) < 1):
-                priceDetail = []
-                detailLoop = browser.find_elements_by_xpath("//div[@class='date'][span[contains(@class, 'on')]][not(contains(., '滿額'))][not(contains(., '系統維護中'))]")
-                print("Price Num: ", len(detailLoop))
-                for i in range(len(detailLoop)):
-                    browser.get(currentPage)
-                    detail = browser.find_elements_by_xpath("//div[@class='date'][span[contains(@class, 'on')]][not(contains(., '滿額'))][not(contains(., '系統維護中'))]")
-                    nextMonth = browser.find_elements_by_css_selector("div[class*='next_month_able']")
-                    countNext = 0
-                    while (detail[i].is_displayed() == False):
-                        nextMonth[countNext].click()
-                        countNext += 1
+            # print("Tour title: ", title)
+            # check = database.checkPrices(tourID)
+            # if(len(check) < 1):
+            #     priceDetail = []
+            #     detailLoop = browser.find_elements_by_xpath("//div[@class='date'][span[contains(@class, 'on')]][not(contains(., '滿額'))][not(contains(., '系統維護中'))]")
+            #     print("Price Num: ", len(detailLoop))
+            #     for i in range(len(detailLoop)):
+            #         browser.get(currentPage)
+            #         detail = browser.find_elements_by_xpath("//div[@class='date'][span[contains(@class, 'on')]][not(contains(., '滿額'))][not(contains(., '系統維護中'))]")
+            #         nextMonth = browser.find_elements_by_css_selector("div[class*='next_month_able']")
+            #         countNext = 0
+            #         while (detail[i].is_displayed() == False):
+            #             nextMonth[countNext].click()
+            #             countNext += 1
 
-                    detail[i].click()
-                    browser.switch_to_window(browser.window_handles[-1])
-                    time.sleep(5)
-                    html = browser.page_source
-                    soup = BeautifulSoup(html, "lxml")
-                    childList = soup.select("span[class*=traveller_desc]")
-                    if(soup.find(lambda t: t.text.strip()=='成人佔半房')):
-                        adult = soup.find(lambda t: t.text.strip()=='成人佔半房')
-                        price = adult.find_next('td')
-                        adultPrice = int(price.getText().lstrip().rstrip().replace(',','').split('D')[1])
-                        adultTax = int(price.find_next('td').getText().lstrip().rstrip().replace(',','').split('D')[1])
-                    else:
-                        adultPrice = None
-                        adultTax = None
-                    if(len(childList) > 1):
-                        if(soup.select("span[class*=traveller_desc]")[1].getText() == "(2-11歲)按回程日期計算"):
-                            childHalf = soup.select("span[class*=traveller_desc]")[1]
-                            price = childHalf.find_next('td')
-                            childHalfRoomPrice = int(price.getText().lstrip().rstrip().replace(',','').split('D')[1])
-                            childHalfRoomTax = int(price.find_next('td').getText().lstrip().rstrip().replace(',','').split('D')[1])
-                        else:
-                            childHalfRoomPrice = None
-                            childHalfRoomTax = None
-                    else:
-                        childHalfRoomPrice = None
-                        childHalfRoomTax = None
-                    if(len(childList) > 2):
-                        if(soup.select("span[class*=traveller_desc]")[2].getText() == "(2-11歲)按回程日期計算"):
-                            child = soup.select("span[class*=traveller_desc]")[2]
-                            price = child.find_next('td')
-                            childPrice = int(price.getText().lstrip().rstrip().replace(',','').split('D')[1])
-                            childTax = int(price.find_next('td').getText().lstrip().rstrip().replace(',','').split('D')[1])
-                        else:
-                            childPrice = None
-                            childTax = None
-                    else:
-                        childPrice = None
-                        childTax = None
-                    if(len(childList) > 3):
-                        if(soup.select("span[class*=traveller_desc]")[3].getText() == "(0-1歲)按回程日期計算"):
-                            baby = soup.select("span[class*=traveller_desc]")[3]
-                            price = baby.find_next('td')
-                            babyPrice = int(price.getText().lstrip().rstrip().replace(',','').split('D')[1])
-                            babyTax = int(price.find_next('td').getText().lstrip().rstrip().replace(',','').split('D')[1])
-                        else:
-                            babyPrice = None
-                            babyTax = None
-                    else:
-                        babyPrice = None
-                        babyTax = None
-                    if(soup.find(lambda t: t.text.strip()=='單人房附加費')):
-                        singleBed = soup.find(lambda t: t.text.strip()=='單人房附加費')
-                        price = singleBed.find_next('td')
-                        singleRoomPrice = int(price.getText().lstrip().rstrip().replace(',','').split('D')[1])
-                    else:
-                        singleRoomPrice = None
-                    departureDate = soup.select_one('.date_picker.hasDatepicker')
-                    date = departureDate.attrs['value'].split('星')[0]
-                    date = date.split('/')
-                    priceDetail.append( {
-                            "departureDate": datetime(int(date[2]),int(date[1]),int(date[0])),
-                            "adultPrice": adultPrice,
-                            "adultTax": adultTax,
-                            "childHalfRoomPrice": childHalfRoomPrice,
-                            "childHalfRoomTax": childHalfRoomTax,
-                            "childPrice": childPrice,
-                            "childTax": childTax,
-                            "babyPrice": babyPrice,
-                            "babyTax": babyTax,
-                            "singleRoomPrice": singleRoomPrice
-                    })
-                    Tour = {
-                        "tourID": tourID,
-                        "prices": priceDetail,
-                    }
-                    _id = database.insertTour(Tour)
+            #         detail[i].click()
+            #         browser.switch_to_window(browser.window_handles[-1])
+            #         time.sleep(5)
+            #         html = browser.page_source
+            #         soup = BeautifulSoup(html, "lxml")
+            #         childList = soup.select("span[class*=traveller_desc]")
+            #         if(soup.find(lambda t: t.text.strip()=='成人佔半房')):
+            #             adult = soup.find(lambda t: t.text.strip()=='成人佔半房')
+            #             price = adult.find_next('td')
+            #             adultPrice = int(price.getText().lstrip().rstrip().replace(',','').split('D')[1])
+            #             adultTax = int(price.find_next('td').getText().lstrip().rstrip().replace(',','').split('D')[1])
+            #         else:
+            #             adultPrice = None
+            #             adultTax = None
+            #         if(len(childList) > 1):
+            #             if(soup.select("span[class*=traveller_desc]")[1].getText() == "(2-11歲)按回程日期計算"):
+            #                 childHalf = soup.select("span[class*=traveller_desc]")[1]
+            #                 price = childHalf.find_next('td')
+            #                 childHalfRoomPrice = int(price.getText().lstrip().rstrip().replace(',','').split('D')[1])
+            #                 childHalfRoomTax = int(price.find_next('td').getText().lstrip().rstrip().replace(',','').split('D')[1])
+            #             else:
+            #                 childHalfRoomPrice = None
+            #                 childHalfRoomTax = None
+            #         else:
+            #             childHalfRoomPrice = None
+            #             childHalfRoomTax = None
+            #         if(len(childList) > 2):
+            #             if(soup.select("span[class*=traveller_desc]")[2].getText() == "(2-11歲)按回程日期計算"):
+            #                 child = soup.select("span[class*=traveller_desc]")[2]
+            #                 price = child.find_next('td')
+            #                 childPrice = int(price.getText().lstrip().rstrip().replace(',','').split('D')[1])
+            #                 childTax = int(price.find_next('td').getText().lstrip().rstrip().replace(',','').split('D')[1])
+            #             else:
+            #                 childPrice = None
+            #                 childTax = None
+            #         else:
+            #             childPrice = None
+            #             childTax = None
+            #         if(len(childList) > 3):
+            #             if(soup.select("span[class*=traveller_desc]")[3].getText() == "(0-1歲)按回程日期計算"):
+            #                 baby = soup.select("span[class*=traveller_desc]")[3]
+            #                 price = baby.find_next('td')
+            #                 babyPrice = int(price.getText().lstrip().rstrip().replace(',','').split('D')[1])
+            #                 babyTax = int(price.find_next('td').getText().lstrip().rstrip().replace(',','').split('D')[1])
+            #             else:
+            #                 babyPrice = None
+            #                 babyTax = None
+            #         else:
+            #             babyPrice = None
+            #             babyTax = None
+            #         if(soup.find(lambda t: t.text.strip()=='單人房附加費')):
+            #             singleBed = soup.find(lambda t: t.text.strip()=='單人房附加費')
+            #             price = singleBed.find_next('td')
+            #             singleRoomPrice = int(price.getText().lstrip().rstrip().replace(',','').split('D')[1])
+            #         else:
+            #             singleRoomPrice = None
+            #         departureDate = soup.select_one('.date_picker.hasDatepicker')
+            #         date = departureDate.attrs['value'].split('星')[0]
+            #         date = date.split('/')
+            #         priceDetail.append( {
+            #                 "departureDate": datetime(int(date[2]),int(date[1]),int(date[0])),
+            #                 "adultPrice": adultPrice,
+            #                 "adultTax": adultTax,
+            #                 "childHalfRoomPrice": childHalfRoomPrice,
+            #                 "childHalfRoomTax": childHalfRoomTax,
+            #                 "childPrice": childPrice,
+            #                 "childTax": childTax,
+            #                 "babyPrice": babyPrice,
+            #                 "babyTax": babyTax,
+            #                 "singleRoomPrice": singleRoomPrice
+            #         })
+            #         Tour = {
+            #             "tourID": tourID,
+            #             "prices": priceDetail,
+            #         }
+            #         _id = database.insertTour(Tour)
 
         
             Tour = {
                 "tourID": tourID,
-                "feature": feature,
-                "title": title,
-                "rating": 0.0,
-                "commentCount": 0,
-                "likeCount": 0,
-                "country": country,
-                "city": city,
-                "day": number_of_days,
+                # "feature": feature,
+                # "title": title,
+                # "rating": 0.0,
+                # "commentCount": 0,
+                # "likeCount": 0,
+                # "country": country,
+                # "city": city,
+                # "day": number_of_days,
                 "tags": allTag,
-                "originalPrice": originalPrice,
-                "salesPrice": salesPrice,
-                "availableDate": availableDate,
-                "image": image,
-                "detail": detailLink,
-                "Disable": False,
-                "days": days,
-                "hashtags": hashtags,
-                "notes": notes,
-                "updatedBy": datetime.now(),
+                # "originalPrice": originalPrice,
+                # "salesPrice": salesPrice,
+                # "availableDate": availableDate,
+                # "image": image,
+                # "detail": detailLink,
+                # "Disable": False,
+                # "days": days,
+                # "hashtags": hashtags,
+                # "notes": notes,
+                # "updatedBy": datetime.now(),
             }
 
             tour_json = json.dumps(Tour,indent=2, ensure_ascii=False, default=json_util.default)
