@@ -34,4 +34,14 @@ router.post('/:tourId', auth, async (req, res) => {
 })
 
 
+router.get('/', auth, async (req, res) => {
+    let user = await User.findOne({ username: req.user.username })
+    if (!user) return res.status(400).send('User not found!')
+    let newLike = user.like
+
+    res.send(newLike)
+
+})
+
+
 module.exports = router;

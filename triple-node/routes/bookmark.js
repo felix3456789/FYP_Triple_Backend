@@ -29,5 +29,15 @@ router.post('/:tourId', auth, async (req, res) => {
 
 })
 
+router.get('/', auth, async (req, res) => {
+    let user = await User.findOne({ username: req.user.username })
+    if (!user) return res.status(400).send('User not found!')
+    let newBookmark = user.bookmark
+
+    res.send(newBookmark)
+
+})
+
+
 
 module.exports = router;
