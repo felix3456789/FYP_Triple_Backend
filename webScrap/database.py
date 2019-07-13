@@ -45,7 +45,7 @@ def update_tags(new_tag, tourID):
     if(temp):
         _id = toursCol.update(
             {'tourID': tourID}, 
-            {"$addToSet": {"hashtags": new_tag}}
+            {"$addToSet": {"tags": new_tag}}
         )
         return temp["_id"]
         
@@ -60,3 +60,9 @@ def checkPrices(tourID):
         cursor = toursCol.find(query)
         results = list(cursor) 
         return results
+
+def getTagList():
+    temp = tagsCol.find({}, {"_id": 0, "title": 1}).distinct('title')
+    results = list(temp) 
+    return results
+ 
