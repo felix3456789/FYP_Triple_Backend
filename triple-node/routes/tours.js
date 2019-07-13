@@ -48,7 +48,7 @@ router.get('/search/:keyword/:page', async (req, res) => {
             { 'days.stay': { $regex: searchString, $options: 'i' } }
         ]
     }
-    const tours = await Tour.find(query, { prices: 0, availableDate: 0, days: 0, notes: 0 }).limit(10).skip((page - 1)*10)
+    const tours = await Tour.find(query, { prices: 0, availableDate: 0, days: 0, notes: 0 }).limit(10).skip((page - 1) * 10)
     const convTours = tours.map((tour) => { return tour.toObject() })
     console.log(new Date())
     res.send(convTours)
@@ -66,9 +66,6 @@ router.get('/recommanded/:keyword', async (req, res) => {
                 prices: 0,
                 days: 0,
                 availableDate: 0,
-                commentCount: 0,
-                likeCount: 0,
-                rating: 0,
                 notes: 0
             }
         }

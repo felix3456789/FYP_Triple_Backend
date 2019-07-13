@@ -14,6 +14,8 @@ const tags = require('./routes/tags')
 const auth = require('./routes/auth')
 const recommander = require('./routes/recommander')
 const comment = require('./routes/comment')
+const like = require('./routes/like')
+const bookmark = require('./routes/bookmark')
 
 if (!config.get('jwtPrivateKey')) {
     console.error('FATAL ERROR: jwtPrivateKey is not defined.')
@@ -40,6 +42,8 @@ app.use('/api/tag', tags)
 app.use('/api/auth', auth)
 app.use('/api/recommander', recommander)
 app.use('/api/comment', comment)
+app.use('/api/like', like)
+app.use('/api/bookmark', bookmark)
 
 app.use(logger)
 

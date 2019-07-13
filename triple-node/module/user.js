@@ -65,6 +65,9 @@ const userSchema = new mongoose.Schema({
     bookmark: {
         type: [String],
     },
+    like: {
+        type: [String],
+    },
     disable: {
         type: Boolean,
         default: false
