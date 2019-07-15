@@ -14,6 +14,7 @@ router.post('/:tourId', auth, async (req, res) => {
     let tour = await Tour.findOne({ tourID: req.params.tourId })
     if (!tour) return res.status(404).send('The tour not found')
 
+    console.log(user.username)
     const tourID = req.params.tourId
     var same = false
     let newLike = user.like
@@ -24,6 +25,11 @@ router.post('/:tourId', auth, async (req, res) => {
     console.log(newLike)
     same ? _.pull(newLike, tourID) : newLike.push(tourID)
     console.log(newLike)
+
+    let newLikeCount = tour.likeCount
+    newLikeCount = same ? newLikeCount - 1 : newLikeCount + 1
+    tour.set({ likeCount: newLikeCount })
+    await tour.save()
 
     user.set({ like: newLike })
     user.markModified('like')

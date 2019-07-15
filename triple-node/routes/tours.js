@@ -98,6 +98,9 @@ router.get('/feature/tour/:count', async (req, res) => {
                 tags: 1,
                 originalPrice: 1,
                 salesPrice: 1,
+                likeCount: 1,
+                commentCount: 1,
+                rating: 1,
             }
         }
     ]);

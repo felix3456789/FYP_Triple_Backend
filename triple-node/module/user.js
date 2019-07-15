@@ -49,7 +49,13 @@ const userSchema = new mongoose.Schema({
         type: Number,
         default: 0
     },
+    Payment: {
+        type: Object
+    },
     Friend: {
+        type: [Object]
+    },
+    EmerContact: {
         type: [Object]
     },
     recommendTags: {

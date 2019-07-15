@@ -4,8 +4,6 @@ const router = express.Router()
 
 const { Tag } = require('../module/tag')
 
-
-
 router.get('/', async (req, res) => {
     const tags = await Tag.find().limit(30)
     const convTags = tags.map((tag) => { return tag.toObject().title })

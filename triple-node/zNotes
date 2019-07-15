@@ -36,8 +36,9 @@ ID
 Passport
 Passport date
 phoneNum
-Payment
+Payment{number, Name}
 BOD
 Credit
 Friend[{}]
+EmerContact[{}]
 }
