@@ -28,6 +28,7 @@ router.post('/:tourId', auth, async (req, res) => {
 
     let newLikeCount = tour.likeCount
     newLikeCount = same ? newLikeCount - 1 : newLikeCount + 1
+    if (newLikeCount < 0) newLikeCount = 0
     tour.set({ likeCount: newLikeCount })
     await tour.save()
 

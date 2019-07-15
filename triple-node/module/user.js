@@ -40,7 +40,7 @@ const userSchema = new mongoose.Schema({
         type: Date
     },
     phoneNum: {
-        type: Number
+        type: String
     },
     BOD: {
         type: Date
