@@ -50,7 +50,7 @@ const userSchema = new mongoose.Schema({
         default: 0
     },
     Payment: {
-        type: Object
+        type: [Object]
     },
     Friend: {
         type: [Object]

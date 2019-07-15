@@ -66,7 +66,7 @@ router.post('/addFriend', auth, async (req, res) => {
     const userNewFriend = user.Friend
     if (user.Friend.length > 0) {
         let sameName = false
-        user.Friend.forEach(friend => {
+        userNewFriend.forEach(friend => {
             if (friend.friendName == req.body.friendName) {
                 sameName = true
             }
@@ -84,6 +84,69 @@ router.post('/addFriend', auth, async (req, res) => {
     user = await user.save()
 
     res.send(_.pick(user, ['_id', 'username', 'email', 'Friend']))
+})
+
+//delete Friend
+router.post('/delFriend/:name', auth, async (req, res) => {
+
+    let user = await User.findOne({ username: req.user.username }, { password: 0 })
+    const userNewFriend = user.Friend
+
+    const temp = _.remove(userNewFriend, function (n) {
+        return n.friendName == req.params.name;
+    });
+    console.log("delete", temp)
+    if (temp.length == 0) return res.status(400).send("No such friend!")
+
+    user.set({ Friend: userNewFriend })
+    user.markModified('Friend')
+    await user.save()
+
+    res.send(`${temp[0].friendName} has been deleted!`)
+})
+
+//add Payment
+router.post('/addPayment', auth, async (req, res) => {
+    const { error } = validateAddPayment(req.body)
+    if (error) return res.status(400).send(error.details[0].message)
+
+    let user = await User.findOne({ username: req.user.username }, { password: 0 })
+    const newPayment = user.Payment
+    if (user.Payment.length > 0) {
+        let sameNum = false
+        newPayment.forEach(payment => {
+            if (payment.cardNumber == req.body.cardNumber) {
+                sameNum = true
+            }
+        });
+        if (sameNum) return res.status(400).send("The card is already add to your account.")
+    }
+    const card = _.pick(req.body, ['cardNumber', 'cardHolderName'])
+
+    newPayment.push(card)
+    user.set({ Payment: newPayment })
+    user.markModified('Payment')
+    user = await user.save()
+    res.send(_.pick(user, ['_id', 'username', 'email', 'Payment']))
+})
+
+//delete Payment
+router.post('/delPayment/:cardNum', auth, async (req, res) => {
+
+    let user = await User.findOne({ username: req.user.username }, { password: 0 })
+    const newPayment = user.Payment
+
+    const temp = _.remove(newPayment, function (n) {
+        return n.cardNumber == req.params.cardNum;
+    });
+    console.log("delete", temp)
+    if (temp.length == 0) return res.status(400).send("No such card!")
+
+    user.set({ Payment: newPayment })
+    user.markModified('Payment')
+    await user.save()
+
+    res.send(`${temp[0].cardNumber} has been deleted!`)
 })
 
 //Register
@@ -132,6 +195,15 @@ function validateAddFriend(user) {
         passportDate: Joi.string().required(),
         email: Joi.string().min(3).max(255).required().email(),
         phoneNum: Joi.string().min(5).max(20).required(),
+    }
+
+    return Joi.validate(user, schema)
+}
+
+function validateAddPayment(user) {
+    const schema = {
+        cardNumber: Joi.string().min(3).max(50).required(),
+        cardHolderName: Joi.string().min(3).max(100).required(),
     }
 
     return Joi.validate(user, schema)
