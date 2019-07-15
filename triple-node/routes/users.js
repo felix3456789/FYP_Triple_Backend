@@ -102,7 +102,7 @@ router.post('/delFriend/:name', auth, async (req, res) => {
     user.markModified('Friend')
     await user.save()
 
-    res.send(`${temp[0].friendName} has been deleted!`)
+    res.send(`${temp[0].friendName} has been moved!`)
 })
 
 //add Payment
@@ -130,6 +130,8 @@ router.post('/addPayment', auth, async (req, res) => {
     res.send(_.pick(user, ['_id', 'username', 'email', 'Payment']))
 })
 
+
+
 //delete Payment
 router.post('/delPayment/:cardNum', auth, async (req, res) => {
 
@@ -146,8 +148,53 @@ router.post('/delPayment/:cardNum', auth, async (req, res) => {
     user.markModified('Payment')
     await user.save()
 
-    res.send(`${temp[0].cardNumber} has been deleted!`)
+    res.send(`${temp[0].cardNumber} has been removed!`)
 })
+
+//add EmerContact
+router.post('/addEmerContact', auth, async (req, res) => {
+    const { error } = validateAddEmerContact(req.body)
+    if (error) return res.status(400).send(error.details[0].message)
+
+    let user = await User.findOne({ username: req.user.username }, { password: 0 })
+    const newEmerContact = user.EmerContact
+    if (user.EmerContact.length > 0) {
+        let same = false
+        newEmerContact.forEach(contact => {
+            if (contact.emerContactName == req.body.emerContactName) {
+                same = true
+            }
+        });
+        if (same) return res.status(400).send("This person is already add to your emergency contact.")
+    }
+    const contact = _.pick(req.body, ['emerContactName', 'relationship', 'email', 'phoneNum'])
+
+    newEmerContact.push(contact)
+    user.set({ EmerContact: newEmerContact })
+    user.markModified('EmerContact')
+    user = await user.save()
+    res.send(_.pick(user, ['_id', 'username', 'email', 'EmerContact']))
+})
+
+//delete EmerContact
+router.post('/delEmerContact/:name', auth, async (req, res) => {
+
+    let user = await User.findOne({ username: req.user.username }, { password: 0 })
+    const newEmerContact = user.EmerContact
+
+    const temp = _.remove(newEmerContact, function (n) {
+        return n.emerContactName == req.params.name;
+    });
+    console.log("delete", temp)
+    if (temp.length == 0) return res.status(400).send("No such person!")
+
+    user.set({ EmerContact: newEmerContact })
+    user.markModified('EmerContact')
+    await user.save()
+
+    res.send(`${temp[0].emerContactName} has been removed!`)
+})
+
 
 //Register
 router.post('/', async (req, res) => {
@@ -204,6 +251,17 @@ function validateAddPayment(user) {
     const schema = {
         cardNumber: Joi.string().min(3).max(50).required(),
         cardHolderName: Joi.string().min(3).max(100).required(),
+    }
+
+    return Joi.validate(user, schema)
+}
+
+function validateAddEmerContact(user) {
+    const schema = {
+        emerContactName: Joi.string().min(3).max(50).required(),
+        relationship: Joi.string().min(1).max(50).required(),
+        email: Joi.string().min(3).max(255).required().email(),
+        phoneNum: Joi.string().min(5).max(20).required(),
     }
 
     return Joi.validate(user, schema)
