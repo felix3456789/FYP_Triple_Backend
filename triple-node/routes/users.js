@@ -10,16 +10,14 @@ const { User, validate } = require('../module/user')
 
 router.get('/', async (req, res) => {
     const users = await User.find().sort('name')
-    console.log(users)
     res.send(users)
 })
 
 router.get('/me', auth, async (req, res) => {
     // User.req.username
 
-    const users = await User.findOne({ username: req.user.username }, { password: 0 })
-    console.log(users)
-    res.send(users)
+    const user = await User.findOne({ username: req.user.username }, { password: 0 })
+    res.send(user)
 })
 
 router.get('/recommendTag', auth, async (req, res) => {
@@ -31,14 +29,24 @@ router.get('/recommendTag', auth, async (req, res) => {
 //update Info
 router.post('/updateInfo', auth, async (req, res) => {
     const { error } = validateUpdateUserInfo(req.body)
-    if (error) return res.status(400).send(error.details[0].message)
+    if (error) {
+        console.log(req.body)
+        console.log(error.details[0].message)
+        return res.status(400).send(error.details[0].message)
+    }
 
     let user = await User.findOne({ username: req.user.username }, { password: 0 })
 
+    console.log("Setting")
+    console.log("BOD", req.body.BOD)
+    console.log("newPassportDate", req.body.passportDate)
+    const newBOD = new Date(req.body.BOD)
+    const newPassportDate = new Date(req.body.passportDate)
+
     user.set({
         firstNameEng: req.body.firstNameEng, lastNameEng: req.body.lastNameEng,
-        title: req.body.title, BOD: new Date(req.body.BOD), passportNum: req.body.passportNum,
-        passportDate: new Date(req.body.passportDate), email: req.body.email, phoneNum: req.body.phoneNum,
+        title: req.body.title, BOD: newBOD, passportNum: req.body.passportNum,
+        passportDate: newPassportDate, email: req.body.email, phoneNum: req.body.phoneNum,
     })
     user = await user.save()
     // {
@@ -209,7 +217,6 @@ router.post('/', async (req, res) => {
     //Hashing Password
     const salt = await bcrypt.genSalt(10)
     user.password = await bcrypt.hash(user.password, salt)
-    console.log(user)
 
     user = await user.save()
 
