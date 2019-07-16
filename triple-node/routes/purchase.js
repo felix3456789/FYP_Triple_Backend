@@ -33,9 +33,13 @@ router.get('/', auth, async (req, res) => {
     let user = await User.findOne({ username: req.user.username })
     if (!user) return res.status(400).send('User not found!')
 
-    const purchaseHistorys = await Purchase.find({ username: req.user.username })
-
-    res.send(purchaseHistorys)
+    let purchaseHistorys = await Purchase.find({ username: req.user.username })
+    let convHistorys = purchaseHistorys.map((history) => { return history.toObject() })
+    for (var i = 0; i < convHistorys.length; i++) {
+        const tour = await Tour.findOne({ tourID: convHistorys[i].tourId }, { image: 1 })
+        convHistorys[i].image = tour.image[0]
+    }
+    res.send(convHistorys)
 })
 
 
