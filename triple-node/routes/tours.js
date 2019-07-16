@@ -15,16 +15,18 @@ router.get('/', async (req, res) => {
 
 router.get('/search/:keyword', async (req, res) => {
     const searchString = req.params.keyword
+    var array = searchString.split("+");
+    const regex = array.join("|");
     var query = {
         $or: [
-            { title: { $regex: searchString, $options: 'i' } },
-            { tourID: { $regex: searchString, $options: 'i' } },
-            { 'hashtags.title': { $regex: searchString, $options: 'i' } },
-            { 'tags.title': { $regex: searchString, $options: 'i' } },
-            { 'days.title': { $regex: searchString, $options: 'i' } },
-            { 'days.content': { $regex: searchString, $options: 'i' } },
-            { 'days.eat': { $regex: searchString, $options: 'i' } },
-            { 'days.stay': { $regex: searchString, $options: 'i' } }
+            { title: { $regex: regex, $options: 'i' } },
+            { tourID: { $regex: regex, $options: 'i' } },
+            { 'hashtags.title': { $regex: regex, $options: 'i' } },
+            { 'tags.title': { $regex: regex, $options: 'i' } },
+            { 'days.title': { $regex: regex, $options: 'i' } },
+            { 'days.content': { $regex: regex, $options: 'i' } },
+            { 'days.eat': { $regex: regex, $options: 'i' } },
+            { 'days.stay': { $regex: regex, $options: 'i' } }
         ]
     }
     const pageCount = Math.ceil((await Tour.count(query)) / 10)
@@ -37,22 +39,23 @@ router.get('/search/:keyword', async (req, res) => {
 router.get('/search/:keyword/:page', async (req, res) => {
     const searchString = req.params.keyword
     const page = req.params.page
+    var array = searchString.split("+");
+    const regex = array.join("|");
     var query = {
         $or: [
-            { title: { $regex: searchString, $options: 'i' } },
-            { tourID: { $regex: searchString, $options: 'i' } },
-            { 'hashtags.title': { $regex: searchString, $options: 'i' } },
-            { 'tags.title': { $regex: searchString, $options: 'i' } },
-            { 'days.title': { $regex: searchString, $options: 'i' } },
-            { 'days.content': { $regex: searchString, $options: 'i' } },
-            { 'days.eat': { $regex: searchString, $options: 'i' } },
-            { 'days.stay': { $regex: searchString, $options: 'i' } }
+            { title: { $regex: regex, $options: 'i' } },
+            { tourID: { $regex: regex, $options: 'i' } },
+            { 'hashtags.title': { $regex: regex, $options: 'i' } },
+            { 'tags.title': { $regex: regex, $options: 'i' } },
+            { 'days.title': { $regex: regex, $options: 'i' } },
+            { 'days.content': { $regex: regex, $options: 'i' } },
+            { 'days.eat': { $regex: regex, $options: 'i' } },
+            { 'days.stay': { $regex: regex, $options: 'i' } }
         ]
     }
     const pageCount = Math.ceil((await Tour.count(query)) / 10)
     const tours = await Tour.find(query, { prices: 0, availableDate: 0, days: 0, notes: 0 }).limit(10).skip((page - 1) * 10)
     const convTours = tours.map((tour) => { return tour.toObject() })
-
     console.log(new Date())
     res.send({ data: convTours, totalPage: pageCount })
 })
