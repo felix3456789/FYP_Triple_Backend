@@ -8,7 +8,7 @@ pylint = "*"
 autopep8 = "*"
 
 [packages]
-django = "==2.1"
+django = "==2.2.10"
 mongoengine = "*"
 djangorestframework = "*"
 django-rest-framework-mongoengine = "*"
